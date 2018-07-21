@@ -33,3 +33,4 @@ missing
 test-driver
 test-suite.log
 VERSION
+src/get-capability.efi
