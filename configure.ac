@@ -15,6 +15,7 @@ AS_IF([test "x$target_cpu" = "xx86_64"],
 # standard c stuff
 AC_PROG_CC
 AM_INIT_AUTOMAKE([foreign subdir-objects])
+AM_PROG_AR([AC_MSG_ERROR([Missing required tool: ar])])
 AC_CONFIG_FILES([Makefile])
 
 # required programs (beyond compiler / linker)

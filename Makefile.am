@@ -3,7 +3,11 @@ if ARCH_x86_64
     AM_CFLAGS = -DEFI_FUNCTION_WRAPPER
 endif
 
-all-local: $(CLEANS)
+all-local: \
+    AUTHORS \
+    src/get-capability.efi \
+    src/libtss2-tcti-uefi.a
+
 clean-local:
 	rm -rf $(CLEANS)
 
@@ -12,7 +16,9 @@ CLEANS = \
     src/get-capability.efi \
     src/get-capability.o \
     src/get-capability.so \
-    src/tcg2-util.o
+    src/libtss2-tcti-uefi.a \
+    src/tcg2-util.o \
+    src/tcti-uefi.o
 
 EXTRA_DIST = \
     AUTHORS \
@@ -27,13 +33,16 @@ AUTHORS :
 	git log --format='%aN <%aE>' | grep -v 'users.noreply.github.com' | sort | \
 	    uniq -c | sort -nr | sed 's/^\s*//' | cut -d" " -f2- > $@
 
-src/get-capability.so: src/get-capability.o src/tcg2-util.o
+src/libtss2-tcti-uefi.a: src/tcg2-util.o src/tcti-uefi.o
+	$(AR) -cr $@ $?
+
+src/get-capability.so: src/get-capability.o src/libtss2-tcti-uefi.a
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) $(AM_CFLAGS) -c -o $@ $^
 
-%.so: %.o
-	$(LD) $(LDFLAGS) $(EXTRA_LDFLAGS) $^ -o $@ $(EXTRA_LDLIBS)
+%.so: %.o src/libtss2-tcti-uefi.a
+	$(LD) $(LDFLAGS) $(EXTRA_LDFLAGS) $^ -o $@ -Bstatic $(EXTRA_LDLIBS)
 
 %.efi: %.so
 	$(OBJCOPY) $(OBJFLAGS) $(EXTRA_OBJFLAGS) $^ $@

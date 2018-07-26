@@ -2,6 +2,7 @@
 .dirstamp
 .libs/
 tmp/
+*.a
 *.efi
 *.gcda
 *.gcno
@@ -18,6 +19,7 @@ AUTHORS
 Makefile
 Makefile.in
 aclocal.m4
+ar-lib
 autom4te.cache/
 compile
 config.guess
