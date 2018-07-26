@@ -6,8 +6,8 @@ endif
 all-local: \
     AUTHORS \
     src/get-capability.efi \
-    src/libtss2-tcti-uefi.a
-
+    src/libtss2-tcti-uefi.a \
+    src/tcti-init.efi
 clean-local:
 	rm -rf $(CLEANS)
 
@@ -18,7 +18,10 @@ CLEANS = \
     src/get-capability.so \
     src/libtss2-tcti-uefi.a \
     src/tcg2-util.o \
-    src/tcti-uefi.o
+    src/tcti-uefi.o \
+    src/tcti-init.efi \
+    src/tcti-init.o \
+    src/tcti-init.so
 
 EXTRA_DIST = \
     AUTHORS \
@@ -37,6 +40,8 @@ src/libtss2-tcti-uefi.a: src/tcg2-util.o src/tcti-uefi.o
 	$(AR) -cr $@ $?
 
 src/get-capability.so: src/get-capability.o src/libtss2-tcti-uefi.a
+
+src/tcti-init.so: src/tcti-init.o src/libtss2-tcti-uefi.a
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) $(AM_CFLAGS) -c -o $@ $^
