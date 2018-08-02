@@ -21,6 +21,9 @@ AC_CONFIG_FILES([Makefile])
 # required programs (beyond compiler / linker)
 AC_CHECK_TOOL([OBJCOPY], objcopy, [AC_MSG_ERROR([Missing required tool: objcopy])])
 
+# unit test library
+PKG_CHECK_MODULES([CMOCKA],[cmocka])
+
 # directory where gnu-efi headers live
 AC_ARG_WITH([efi-includedir],
              AS_HELP_STRING([--with-efi-includedir=DIR],

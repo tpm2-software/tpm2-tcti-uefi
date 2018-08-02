@@ -36,3 +36,4 @@ test-driver
 test-suite.log
 VERSION
 src/get-capability.efi
+test/tcti-uefi-init_unit
