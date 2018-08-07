@@ -9,9 +9,11 @@ AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 AS_IF([test "x$target_cpu" = "xi386" -o "x$target_cpu" = "xi686"],
-      [ARCH="ia32"])
-AS_IF([test "x$target_cpu" = "xx86_64"],
-      [ARCH="x86_64"])
+      [ARCH="ia32"
+       EXTRA_CFLAGS=-DEFI_FUNCTION_WRAPPER],
+      [test "x$target_cpu" = "xx86_64"],
+      [ARCH="x86_64"],
+      [AC_MSG_ERROR(["Unsupported target CPU: $target_cpu"])])
 # standard c stuff
 AC_PROG_CC
 AM_INIT_AUTOMAKE([foreign subdir-objects])
@@ -30,7 +32,7 @@ AC_ARG_WITH([efi-includedir],
                             [Directory containing gnu-efi headers.]),
             [],
             [with_efi_includedir=/usr/include/efi])
-EXTRA_CFLAGS="-I${with_efi_includedir} -I${with_efi_includedir}/${ARCH}"
+EXTRA_CFLAGS+="-I${with_efi_includedir} -I${with_efi_includedir}/${ARCH}"
 # this is really ugly but AC_CHECK_HEADER doesn't allow us to pass in
 # compiler flags / search path
 CFLAGS_TMP="$CFLAGS"
@@ -102,9 +104,8 @@ LOCAL_ADD_LINK_FLAG([-shared])
 LOCAL_ADD_LINK_FLAG([-Bsymbolic])
 # flags added to EXTRA_OBJFLAGS
 EXTRA_OBJFLAGS="-j .text -j .sdata -j .data -j .dynamic -j .dynsym -j .rel -j .rela -j .reloc --target=efi-app-${ARCH}"
+EXTRA_CFLAGS="$EXTRA_CFLAGS -DARCH=$ARCH"
 
-# set conditionals for Makefile
-AM_CONDITIONAL([ARCH_x86_64],[test "x$ARCH" = "xx86_64"])
 # export variables to Makefile
 AC_SUBST([EXTRA_CFLAGS])
 AC_SUBST([EXTRA_LDFLAGS])
@@ -112,6 +113,5 @@ AC_SUBST([EXTRA_LDLIBS])
 AC_SUBST([EXTRA_OBJFLAGS])
 # propagate configure arguments up to distcheck target
 AC_SUBST([DISTCHECK_CONFIGURE_FLAGS],[$ac_configure_args])
-
 
 AC_OUTPUT

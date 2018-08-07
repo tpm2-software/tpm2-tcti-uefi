@@ -1,8 +1,5 @@
 # SPDK-License-Identifier: BSD-2
 AM_CFLAGS = -I $(srcdir)/src
-if ARCH_x86_64
-    AM_CFLAGS += -DEFI_FUNCTION_WRAPPER
-endif
 
 TESTS = $(check_PROGRAMS)
 check_PROGRAMS = \

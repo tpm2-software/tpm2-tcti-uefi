@@ -2,8 +2,16 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <efi/efi.h>
-#include <efi/efilib.h>
+#if ARCH == x86_64
+#include <efi/x86_64/efibind.h>
+#elif ARCH == ia32
+#include <efi/ia32/efibind.h>
+#else
+#error "Unsupported ARCH."
+#endif
+
+#include <efi/efidef.h>
+#include <efi/efierr.h>
 
 #include <setjmp.h>
 #include <cmocka.h>
