@@ -1,4 +1,6 @@
 # SPDK-License-Identifier: BSD-2
+#
+include tss2-src-vars.mk
 AM_CFLAGS = -I $(srcdir)/src
 
 TESTS = $(check_PROGRAMS)

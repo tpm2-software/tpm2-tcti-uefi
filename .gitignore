@@ -34,6 +34,7 @@ ltmain.sh
 missing
 test-driver
 test-suite.log
+tss2-src-vars.mk
 VERSION
 src/get-capability.efi
 test/tcti-uefi-init_unit
