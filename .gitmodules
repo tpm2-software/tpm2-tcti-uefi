@@ -1,0 +1,3 @@
+[submodule "tpm2-tss"]
+	path = tpm2-tss
+	url = https://github.com/tpm2-software/tpm2-tss

@@ -1,4 +1,5 @@
 #!/bin/sh
 
 git describe --tags --always --dirty > VERSION
+git submodule update --init --recursive
 autoreconf --install --sym
