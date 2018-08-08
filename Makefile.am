@@ -1,7 +1,7 @@
 # SPDK-License-Identifier: BSD-2
 #
 include tss2-src-vars.mk
-AM_CFLAGS = -I $(srcdir)/src
+AM_CFLAGS = -I $(srcdir)/src -Itpm2-tss/src -Itpm2-tss/include/tss2
 
 TESTS = $(check_PROGRAMS)
 check_PROGRAMS = \
@@ -11,10 +11,12 @@ all-local: \
     AUTHORS \
     src/get-capability.efi \
     src/libtss2-tcti-uefi.a \
+    src/libtss2-mu-uefi.a \
     src/tcti-init.efi \
     src/tcti-send-buf.efi
 clean-local:
 	rm -rf $(CLEANS)
+	find tpm2-tss/src -name '*.o' | xargs rm -f
 
 CLEANS = \
     AUTHORS \
@@ -22,6 +24,7 @@ CLEANS = \
     src/get-capability.o \
     src/get-capability.so \
     src/libtss2-tcti-uefi.a \
+    src/libtss2-mu-uefi.a \
     src/tcg2-util.o \
     src/tcti-uefi.o \
     src/tcti-init.efi \
@@ -43,6 +46,10 @@ EXTRA_DIST = \
 AUTHORS :
 	git log --format='%aN <%aE>' | grep -v 'users.noreply.github.com' | sort | \
 	    uniq -c | sort -nr | sed 's/^\s*//' | cut -d" " -f2- > $@
+
+src/libtss2-mu-uefi.a: AM_CFLAGS+=-DMAXLOGLEVEL=0
+src/libtss2-mu-uefi.a: $(TSS2_MU_SRC:.c=.o)
+	$(AR) -cr $@ $?
 
 src/libtss2-tcti-uefi.a: src/tcg2-util.o src/tcti-uefi.o
 	$(AR) -cr $@ $?
