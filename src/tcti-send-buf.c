@@ -7,6 +7,7 @@
 
 #include <tss2/tss2_tpm2_types.h>
 #include <tss2/tss2_tcti.h>
+#include <tss2/tss2_mu.h>
 
 #include "tcg2-util.h"
 #include "tcti-uefi.h"
@@ -17,16 +18,30 @@ void
 tpm2_header_dump (BYTE buf[],
                   size_t buf_size)
 {
+    TSS2_RC rc;
     TPMI_ST_COMMAND_TAG tag;
     UINT32 out_size = 0, out_code = 0;
+    size_t offset = 0;
 
     if (buf_size < TPM2_HEADER_SIZE) {
         Print (L"buffer smaller than TPM2 response header, not good\n");
         return;
     }
-    tag = be16toh (*(TPMI_ST_COMMAND_TAG*)buf);
-    out_size = be32toh (*(UINT32*)(&buf[sizeof (TPMI_ST_COMMAND_TAG)]));
-    out_code = be32toh (*(UINT32*)(&buf[sizeof (TPMI_ST_COMMAND_TAG) + sizeof (UINT32)]));
+    rc = Tss2_MU_TPM2_ST_Unmarshal (buf, buf_size, &offset, &tag);
+    if (rc != TSS2_RC_SUCCESS) {
+        Print (L"Failed to unmarshal TPM2 header tag\n");
+        return;
+    }
+    rc = Tss2_MU_UINT32_Unmarshal (buf, buf_size, &offset, &out_size);
+    if (rc != TSS2_RC_SUCCESS) {
+        Print (L"Failed to unmarshal TPM2 header size\n");
+        return;
+    }
+    rc = Tss2_MU_UINT32_Unmarshal (buf, buf_size, &offset, &out_code);
+    if (rc != TSS2_RC_SUCCESS) {
+        Print (L"Failed to unmarshal TPM2 header code\n");
+        return;
+    }
     Print (L"  TPMI_ST_COMMAND_TAG: 0x%x\n  UINT32 size: 0x%x\n  UINT32 "
            L"code: 0x%x\n", tag, out_size, out_code);
 }

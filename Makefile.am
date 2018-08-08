@@ -58,7 +58,7 @@ src/get-capability.so: src/get-capability.o src/libtss2-tcti-uefi.a
 
 src/tcti-init.so: src/tcti-init.o src/libtss2-tcti-uefi.a
 
-src/tcti-send-buf.so: src/tcti-send-buf.o src/libtss2-tcti-uefi.a
+src/tcti-send-buf.so: src/tcti-send-buf.o src/libtss2-tcti-uefi.a src/libtss2-mu-uefi.a
 
 test_tcti_uefi_init_unit_CFLAGS = $(CMOCKA_CFLAGS) $(EXTRA_CFLAGS) $(AM_CFLAGS)
 test_tcti_uefi_init_unit_LDADD = $(CMOCKA_LIBS) src/tcti-uefi.o
@@ -68,7 +68,7 @@ test_tcti_uefi_init_unit_SOURCES = test/tcti-uefi-init_unit.c
 %.o: %.c
 	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) $(AM_CFLAGS) -c -o $@ $^
 
-%.so: %.o src/libtss2-tcti-uefi.a
+%.so: %.o
 	$(LD) $(LDFLAGS) $(EXTRA_LDFLAGS) $^ -o $@ -Bstatic $(EXTRA_LDLIBS)
 
 %.efi: %.so
