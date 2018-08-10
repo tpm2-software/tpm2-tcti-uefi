@@ -16,7 +16,7 @@ typedef enum {
 typedef struct {
     TSS2_TCTI_CONTEXT_COMMON_V2 common;
     tcti_uefi_state_t state;
-    UINTN size;
+    size_t size;
     BYTE cmd_buf[];
 } TSS2_TCTI_UEFI_CONTEXT;
 
