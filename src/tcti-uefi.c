@@ -90,7 +90,6 @@ tcti_uefi_receive (TSS2_TCTI_CONTEXT *context,
                    int32_t timeout)
 {
     TSS2_TCTI_UEFI_CONTEXT *tcti_uefi;
-    EFI_GUID tcg2_guid = EFI_TCG2_PROTOCOL_GUID;
     EFI_TCG2_PROTOCOL *tcg2_proto;
     EFI_STATUS status;
 
@@ -113,9 +112,8 @@ tcti_uefi_receive (TSS2_TCTI_CONTEXT *context,
         return TSS2_RC_SUCCESS;
     }
 
-    status = LibLocateProtocol (&tcg2_guid, (VOID**)&tcg2_proto);
+    status = tcg2_get_protocol (&tcg2_proto);
     if (EFI_ERROR (status)) {
-        Print (L"Failed to locate UEFI Protocol: 0x%x\n", status);
         return TSS2_TCTI_RC_GENERAL_FAILURE;
     }
 
@@ -171,14 +169,12 @@ tcti_uefi_finalize (TSS2_TCTI_CONTEXT *context)
 size_t
 sizeof_tcti_uefi_context (void)
 {
-    EFI_GUID tcg2_guid = EFI_TCG2_PROTOCOL_GUID;
     EFI_STATUS status;
     EFI_TCG2_PROTOCOL *tcg2_proto;
     size_t size = 0;
 
-    status = LibLocateProtocol (&tcg2_guid, (VOID**)&tcg2_proto);
+    status = tcg2_get_protocol (&tcg2_proto);
     if (EFI_ERROR (status)) {
-        Print (L"Failed to locate UEFI Protocol: 0x%x\n", status);
         return 0;
     }
     size += tcg2_get_max_buf (tcg2_proto);

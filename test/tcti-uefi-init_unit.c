@@ -83,11 +83,9 @@ __wrap_FreePool (IN VOID *p)
  * second mock value is return status from function
  */
 EFI_STATUS
-__wrap_LibLocateProtocol (IN  EFI_GUID *ProtocolGuid,
-                          OUT VOID **Interface)
+__wrap_tcg2_get_protocol (EFI_TCG2_PROTOCOL **tcg2_protocol)
 {
-    printf ("%s\n", __func__);
-    *Interface = mock_ptr_type (VOID*);
+    *tcg2_protocol = mock_ptr_type (VOID*);
     return mock_type (EFI_STATUS);
 }
 /* map UEFI 'Print' function to printf. No mocking required. */
@@ -112,8 +110,8 @@ tcti_uefi_init_size_test (void **state)
 {
     size_t tcti_size;
 
-    will_return (__wrap_LibLocateProtocol, PROTOCOL_PTR);
-    will_return (__wrap_LibLocateProtocol, EFI_SUCCESS);
+    will_return (__wrap_tcg2_get_protocol, PROTOCOL_PTR);
+    will_return (__wrap_tcg2_get_protocol, EFI_SUCCESS);
     will_return (__wrap_tcg2_get_max_buf, MAXBUF_SIZE);
     Tss2_Tcti_Uefi_Init (NULL, &tcti_size, NULL);
     assert_int_equal (tcti_size, sizeof (TSS2_TCTI_UEFI_CONTEXT) + MAXBUF_SIZE);
@@ -128,8 +126,8 @@ tcti_uefi_init_success_return_value_test (void **state)
     size_t tcti_size;
     TSS2_RC ret;
 
-    will_return (__wrap_LibLocateProtocol, PROTOCOL_PTR);
-    will_return (__wrap_LibLocateProtocol, EFI_SUCCESS);
+    will_return (__wrap_tcg2_get_protocol, PROTOCOL_PTR);
+    will_return (__wrap_tcg2_get_protocol, EFI_SUCCESS);
     will_return (__wrap_tcg2_get_max_buf, MAXBUF_SIZE);
     ret = Tss2_Tcti_Uefi_Init (NULL, &tcti_size, NULL);
     assert_int_equal (ret, TSS2_RC_SUCCESS);
