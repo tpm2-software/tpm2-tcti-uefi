@@ -20,6 +20,8 @@ typedef struct {
     BYTE cmd_buf[];
 } TSS2_TCTI_UEFI_CONTEXT;
 
+TSS2_TCTI_UEFI_CONTEXT*
+tcti_uefi_context_cast (TSS2_TCTI_CONTEXT *tcti_ctx);
 TSS2_RC
 tcti_uefi_init (TSS2_TCTI_CONTEXT **ctx);
 TSS2_RC

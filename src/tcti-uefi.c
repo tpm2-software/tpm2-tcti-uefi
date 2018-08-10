@@ -31,19 +31,6 @@ tcti_uefi_context_cast (TSS2_TCTI_CONTEXT *tcti_ctx)
     return NULL;
 }
 /*
- * This function down-casts the device TCTI context to the common context
- * defined in the tcti-common module.
- */
-TSS2_TCTI_CONTEXT_COMMON_V2*
-tcti_uefi_down_cast (TSS2_TCTI_UEFI_CONTEXT *tcti_uefi)
-{
-    if (tcti_uefi == NULL) {
-        return NULL;
-    }
-
-    return &tcti_uefi->common;
-}
-/*
  * Transmit function is a bit weird. This is the result of an impedance
  * mismatch between the TCG2 UEFI protocol / API and the TCTI API.
  * The prior only synchronous, the later separates the transmit and receive

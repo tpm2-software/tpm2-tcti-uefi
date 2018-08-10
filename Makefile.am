@@ -5,6 +5,7 @@ AM_CFLAGS = -I $(srcdir)/src -Itpm2-tss/src -Itpm2-tss/include/tss2
 
 TESTS = $(check_PROGRAMS)
 check_PROGRAMS = \
+    test/tcti-uefi-cast_unit \
     test/tcti-uefi-init_unit
 
 all-local: \
@@ -54,9 +55,18 @@ src/get-capability.so: src/get-capability.o src/libtss2-tcti-uefi.a
 
 src/tcti-send-buf.so: src/tcti-send-buf.o src/libtss2-tcti-uefi.a src/libtss2-mu-uefi.a
 
+TEST_WRAPS = -Wl,--wrap=AllocatePool,--wrap=CopyMem,--wrap=FreePool \
+    -Wl,--wrap=Print,--wrap=tcg2_get_capability,--wrap=tcg2_get_max_buf \
+    -Wl,--wrap=tcg2_get_protocol,--wrap=tcg2_submit_command
+
+test_tcti_uefi_cast_unit_CFLAGS = $(CMOCKA_CFLAGS) $(EXTRA_CFLAGS) $(AM_CFLAGS)
+test_tcti_uefi_cast_unit_LDADD = $(CMOCKA_LIBS) src/tcti-uefi.o test/tcti-uefi-wraps.o
+test_tcti_uefi_cast_unit_LDFLAGS = $(TEST_WRAPS)
+test_tcti_uefi_cast_unit_SOURCES = test/tcti-uefi-cast_unit.c
+
 test_tcti_uefi_init_unit_CFLAGS = $(CMOCKA_CFLAGS) $(EXTRA_CFLAGS) $(AM_CFLAGS)
 test_tcti_uefi_init_unit_LDADD = $(CMOCKA_LIBS) src/tcti-uefi.o test/tcti-uefi-wraps.o
-test_tcti_uefi_init_unit_LDFLAGS = -Wl,--wrap=AllocatePool,--wrap=CopyMem,--wrap=FreePool,--wrap=tcg2_get_protocol,--wrap=Print,--wrap=tcg2_get_capability,--wrap=tcg2_get_max_buf,--wrap=tcg2_submit_command
+test_tcti_uefi_init_unit_LDFLAGS = $(TEST_WRAPS)
 test_tcti_uefi_init_unit_SOURCES = test/tcti-uefi-init_unit.c
 
 %.o: %.c
