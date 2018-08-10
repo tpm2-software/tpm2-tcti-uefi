@@ -7,6 +7,7 @@ TESTS = $(check_PROGRAMS)
 check_PROGRAMS = \
     test/tcti-uefi-cast_unit \
     test/tcti-uefi-init_unit \
+    test/tcti-uefi-receive_unit \
     test/tcti-uefi-transmit_unit
 
 all-local: \
@@ -69,6 +70,11 @@ test_tcti_uefi_init_unit_CFLAGS = $(CMOCKA_CFLAGS) $(EXTRA_CFLAGS) $(AM_CFLAGS)
 test_tcti_uefi_init_unit_LDADD = $(CMOCKA_LIBS) src/tcti-uefi.o test/tcti-uefi-wraps.o
 test_tcti_uefi_init_unit_LDFLAGS = $(TEST_WRAPS)
 test_tcti_uefi_init_unit_SOURCES = test/tcti-uefi-init_unit.c
+
+test_tcti_uefi_receive_unit_CFLAGS = $(CMOCKA_CFLAGS) $(EXTRA_CFLAGS) $(AM_CFLAGS)
+test_tcti_uefi_receive_unit_LDADD = $(CMOCKA_LIBS) src/tcti-uefi.o test/tcti-uefi-wraps.o
+test_tcti_uefi_receive_unit_LDFLAGS = $(TEST_WRAPS)
+test_tcti_uefi_receive_unit_SOURCES = test/tcti-uefi-receive_unit.c
 
 test_tcti_uefi_transmit_unit_CFLAGS = $(CMOCKA_CFLAGS) $(EXTRA_CFLAGS) $(AM_CFLAGS)
 test_tcti_uefi_transmit_unit_LDADD = $(CMOCKA_LIBS) src/tcti-uefi.o test/tcti-uefi-wraps.o
