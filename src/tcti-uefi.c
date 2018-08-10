@@ -97,11 +97,8 @@ tcti_uefi_receive (TSS2_TCTI_CONTEXT *context,
     if (context == NULL || size == NULL) {
         return TSS2_TCTI_RC_BAD_REFERENCE;
     }
-    if (timeout < TSS2_TCTI_TIMEOUT_BLOCK) {
-        return TSS2_TCTI_RC_BAD_VALUE;
-    }
     /* The TCG2 UEFI protocol is only capable of blocking I/O */
-    if (timeout > TSS2_TCTI_TIMEOUT_BLOCK) {
+    if (timeout != TSS2_TCTI_TIMEOUT_BLOCK) {
         return TSS2_TCTI_RC_NOT_IMPLEMENTED;
     }
     tcti_uefi = tcti_uefi_context_cast (context);
@@ -143,7 +140,7 @@ tcti_uefi_receive (TSS2_TCTI_CONTEXT *context,
         return TSS2_TCTI_RC_IO_ERROR;
     case EFI_ACCESS_DENIED:
         Print (L"EFI_ACCESS_DENIED\n");
-        return TSS2_TCTI_RC_IO_ERROR;
+        return TSS2_TCTI_RC_GENERAL_FAILURE;
     default:
         Print (L"Unexpected EFI error code\n");
         return TSS2_TCTI_RC_GENERAL_FAILURE;
