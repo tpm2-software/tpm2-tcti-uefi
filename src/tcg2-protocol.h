@@ -2,7 +2,7 @@
 #ifndef TCG2_PROTOCOL_H
 #define TCG2_PROTOCOL_H 1
 
-#include <efi/efidef.h>
+#include "uefi-types.h"
 
 /* IN / OUT denote parameter directionality in TCG EFI spec. They
  * don't do anything, just for readiility I guess.

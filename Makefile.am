@@ -55,7 +55,7 @@ src/get-capability.so: src/get-capability.o src/libtss2-tcti-uefi.a
 src/tcti-send-buf.so: src/tcti-send-buf.o src/libtss2-tcti-uefi.a src/libtss2-mu-uefi.a
 
 test_tcti_uefi_init_unit_CFLAGS = $(CMOCKA_CFLAGS) $(EXTRA_CFLAGS) $(AM_CFLAGS)
-test_tcti_uefi_init_unit_LDADD = $(CMOCKA_LIBS) src/tcti-uefi.o
+test_tcti_uefi_init_unit_LDADD = $(CMOCKA_LIBS) src/tcti-uefi.o test/tcti-uefi-wraps.o
 test_tcti_uefi_init_unit_LDFLAGS = -Wl,--wrap=AllocatePool,--wrap=CopyMem,--wrap=FreePool,--wrap=tcg2_get_protocol,--wrap=Print,--wrap=tcg2_get_capability,--wrap=tcg2_get_max_buf,--wrap=tcg2_submit_command
 test_tcti_uefi_init_unit_SOURCES = test/tcti-uefi-init_unit.c
 
