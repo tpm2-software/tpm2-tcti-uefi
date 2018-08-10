@@ -6,7 +6,8 @@ AM_CFLAGS = -I $(srcdir)/src -Itpm2-tss/src -Itpm2-tss/include/tss2
 TESTS = $(check_PROGRAMS)
 check_PROGRAMS = \
     test/tcti-uefi-cast_unit \
-    test/tcti-uefi-init_unit
+    test/tcti-uefi-init_unit \
+    test/tcti-uefi-transmit_unit
 
 all-local: \
     AUTHORS \
@@ -68,6 +69,11 @@ test_tcti_uefi_init_unit_CFLAGS = $(CMOCKA_CFLAGS) $(EXTRA_CFLAGS) $(AM_CFLAGS)
 test_tcti_uefi_init_unit_LDADD = $(CMOCKA_LIBS) src/tcti-uefi.o test/tcti-uefi-wraps.o
 test_tcti_uefi_init_unit_LDFLAGS = $(TEST_WRAPS)
 test_tcti_uefi_init_unit_SOURCES = test/tcti-uefi-init_unit.c
+
+test_tcti_uefi_transmit_unit_CFLAGS = $(CMOCKA_CFLAGS) $(EXTRA_CFLAGS) $(AM_CFLAGS)
+test_tcti_uefi_transmit_unit_LDADD = $(CMOCKA_LIBS) src/tcti-uefi.o test/tcti-uefi-wraps.o
+test_tcti_uefi_transmit_unit_LDFLAGS = $(TEST_WRAPS)
+test_tcti_uefi_transmit_unit_SOURCES = test/tcti-uefi-transmit_unit.c
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) $(AM_CFLAGS) -c -o $@ $^
