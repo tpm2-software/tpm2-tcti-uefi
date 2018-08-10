@@ -20,18 +20,18 @@ typedef struct {
     BYTE cmd_buf[];
 } TSS2_TCTI_UEFI_CONTEXT;
 
-TSS2_RC EFIAPI
+TSS2_RC
 tcti_uefi_init (TSS2_TCTI_CONTEXT **ctx);
-TSS2_RC EFIAPI
+TSS2_RC
 tcti_uefi_receive (TSS2_TCTI_CONTEXT *context,
                    size_t *size,
                    uint8_t *response,
                    int32_t timeout);
-TSS2_RC EFIAPI
+TSS2_RC
 tcti_uefi_transmit (TSS2_TCTI_CONTEXT *context,
                     size_t size,
                     const uint8_t *command);
-void EFIAPI
+void
 tcti_uefi_finalize (TSS2_TCTI_CONTEXT *context);
 
 #endif /* TCTI_UEFI_H */
