@@ -53,8 +53,10 @@ src_libtss2_mu_uefi_a_SOURCES = $(TSS2_MU_SRC)
 src_libtss2_tcti_uefi_a_CFLAGS = $(EXTRA_CFLAGS) $(AM_CFLAGS)
 src_libtss2_tcti_uefi_a_SOURCES = src/tcg2-util.c src/tcti-uefi.c
 
+src/get-capability.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
 src/get-capability.so: src/get-capability.o src/libtss2-tcti-uefi.a
 
+src/tcti-send-buf.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
 src/tcti-send-buf.so: src/tcti-send-buf.o src/libtss2-tcti-uefi.a src/libtss2-mu-uefi.a
 
 # variables to simplify test rules
@@ -93,9 +95,6 @@ test_tcti_uefi_finalize_unit_CFLAGS = $(TEST_FLAGS)
 test_tcti_uefi_finalize_unit_LDADD = $(TEST_LIBS)
 test_tcti_uefi_finalize_unit_LDFLAGS = $(TEST_WRAPS)
 test_tcti_uefi_finalize_unit_SOURCES = test/tcti-uefi-finalize_unit.c
-
-%.o: %.c
-	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) $(AM_CFLAGS) -c -o $@ $^
 
 # pattern rule to link intermediate shared object
 %.so: %.o
