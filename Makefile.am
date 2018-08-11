@@ -4,6 +4,9 @@ include tss2-src-vars.mk
 AM_CFLAGS = -I $(srcdir)/src -Itpm2-tss/src -Itpm2-tss/include/tss2
 
 TESTS = $(check_PROGRAMS)
+lib_LIBRARIES = \
+    src/libtss2-mu-uefi.a \
+    src/libtss2-tcti-uefi.a
 check_PROGRAMS = \
     test/tcti-uefi-cast_unit \
     test/tcti-uefi-finalize_unit \
@@ -14,8 +17,6 @@ check_PROGRAMS = \
 all-local: \
     AUTHORS \
     src/get-capability.efi \
-    src/libtss2-tcti-uefi.a \
-    src/libtss2-mu-uefi.a \
     src/tcti-send-buf.efi
 clean-local:
 	rm -rf $(CLEANS)
@@ -47,12 +48,11 @@ AUTHORS :
 	git log --format='%aN <%aE>' | grep -v 'users.noreply.github.com' | sort | \
 	    uniq -c | sort -nr | sed 's/^\s*//' | cut -d" " -f2- > $@
 
-src/libtss2-mu-uefi.a: AM_CFLAGS+=-DMAXLOGLEVEL=0
-src/libtss2-mu-uefi.a: $(TSS2_MU_SRC:.c=.o)
-	$(AR) -cr $@ $?
+src_libtss2_mu_uefi_a_CFLAGS = $(EXTRA_CFLAGS) $(AM_CFLAGS) -DMAXLOGLEVEL=0
+src_libtss2_mu_uefi_a_SOURCES = $(TSS2_MU_SRC)
 
-src/libtss2-tcti-uefi.a: src/tcg2-util.o src/tcti-uefi.o
-	$(AR) -cr $@ $?
+src_libtss2_tcti_uefi_a_CFLAGS = $(EXTRA_CFLAGS) $(AM_CFLAGS)
+src_libtss2_tcti_uefi_a_SOURCES = src/tcg2-util.c src/tcti-uefi.c
 
 src/get-capability.so: src/get-capability.o src/libtss2-tcti-uefi.a
 

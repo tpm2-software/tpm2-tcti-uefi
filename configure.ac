@@ -16,6 +16,7 @@ AS_IF([test "x$target_cpu" = "xi386" -o "x$target_cpu" = "xi686"],
       [AC_MSG_ERROR(["Unsupported target CPU: $target_cpu"])])
 # standard c stuff
 AC_PROG_CC
+AC_PROG_RANLIB
 AM_INIT_AUTOMAKE([foreign subdir-objects])
 AM_PROG_AR([AC_MSG_ERROR([Missing required tool: ar])])
 AC_CONFIG_FILES([Makefile])
