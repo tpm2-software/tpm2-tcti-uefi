@@ -1,7 +1,7 @@
 # SPDK-License-Identifier: BSD-2
 #
 include tss2-src-vars.mk
-AM_CFLAGS = -I $(srcdir)/src -Itpm2-tss/src -Itpm2-tss/include/tss2
+AM_CFLAGS = -I$(srcdir)/src -Itpm2-tss/src -Itpm2-tss/include/tss2
 
 TESTS = $(check_PROGRAMS)
 lib_LIBRARIES = src/libtss2-mu-uefi.a src/libtss2-tcti-uefi.a
@@ -14,6 +14,7 @@ check_PROGRAMS = \
     test/tcti-uefi-transmit_unit
 
 all-local: \
+    AUTHORS \
     src/get-capability.efi \
     src/tcti-send-buf.efi
 clean-local:
@@ -23,14 +24,8 @@ clean-local:
 CLEANS = \
     AUTHORS \
     src/get-capability.efi \
-    src/get-capability.o \
     src/get-capability.so \
-    src/libtss2-tcti-uefi.a \
-    src/libtss2-mu-uefi.a \
-    src/tcg2-util.o \
-    src/tcti-uefi.o \
     src/tcti-send-buf.efi \
-    src/tcti-send-buf.o \
     src/tcti-send-buf.so
 
 EXTRA_DIST = \
@@ -42,10 +37,6 @@ EXTRA_DIST = \
     README.md \
     VERSION
 
-AUTHORS :
-	git log --format='%aN <%aE>' | grep -v 'users.noreply.github.com' | sort | \
-	    uniq -c | sort -nr | sed 's/^\s*//' | cut -d" " -f2- > $@
-
 # rules to build libraries
 src_libtss2_mu_uefi_a_CFLAGS = $(EXTRA_CFLAGS) $(AM_CFLAGS) -DMAXLOGLEVEL=0
 src_libtss2_mu_uefi_a_SOURCES = $(TSS2_MU_SRC)
@@ -53,11 +44,18 @@ src_libtss2_mu_uefi_a_SOURCES = $(TSS2_MU_SRC)
 src_libtss2_tcti_uefi_a_CFLAGS = $(EXTRA_CFLAGS) $(AM_CFLAGS)
 src_libtss2_tcti_uefi_a_SOURCES = src/tcg2-util.c src/tcti-uefi.c
 
+# dependency expression for shared objects built for the UEFI executables
 src/get-capability.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
 src/get-capability.so: src/get-capability.o src/libtss2-tcti-uefi.a
 
 src/tcti-send-buf.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
-src/tcti-send-buf.so: src/tcti-send-buf.o src/libtss2-tcti-uefi.a src/libtss2-mu-uefi.a
+src/tcti-send-buf.so: src/tcti-send-buf.o src/libtss2-tcti-uefi.a \
+    src/libtss2-mu-uefi.a
+
+# rule to extract contributors from git history & generate AUTHORS file
+AUTHORS :
+	git log --format='%aN <%aE>' | grep -v 'users.noreply.github.com' | sort | \
+	    uniq -c | sort -nr | sed 's/^\s*//' | cut -d" " -f2- > $@
 
 # variables to simplify test rules
 TEST_FLAGS = $(CMOCKA_CFLAGS) $(EXTRA_CFLAGS) $(AM_CFLAGS)
