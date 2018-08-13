@@ -4,7 +4,7 @@ include tss2-src-vars.mk
 AM_CFLAGS = -I$(srcdir)/src -Itpm2-tss/src -Itpm2-tss/include/tss2
 
 TESTS = $(check_PROGRAMS)
-lib_LIBRARIES = src/libtss2-mu-uefi.a src/libtss2-tcti-uefi.a
+lib_LIBRARIES = src/libtss2-mu-uefi.a src/libtss2-sys-uefi.a src/libtss2-tcti-uefi.a
 noinst_LIBRARIES = test/libtest-util.a
 check_PROGRAMS = \
     test/tcti-uefi-cast_unit \
@@ -39,7 +39,10 @@ EXTRA_DIST = \
 
 # rules to build libraries
 src_libtss2_mu_uefi_a_CFLAGS = $(EXTRA_CFLAGS) $(AM_CFLAGS) -DMAXLOGLEVEL=0
-src_libtss2_mu_uefi_a_SOURCES = $(TSS2_MU_SRC)
+src_libtss2_mu_uefi_a_SOURCES = $(TSS2_MU_C) $(TSS2_UTIL_C)
+
+src_libtss2_sys_uefi_a_CFLAGS = $(EXTRA_CFLAGS) $(AM_CFLAGS) -I$(srcdir)/tpm2-tss/src/tss2-sys/ -DMAXLOGLEVEL=0
+src_libtss2_sys_uefi_a_SOURCES = $(TSS2_SYS_C) $(TSS2_UTIL_C)
 
 src_libtss2_tcti_uefi_a_CFLAGS = $(EXTRA_CFLAGS) $(AM_CFLAGS)
 src_libtss2_tcti_uefi_a_SOURCES = src/tcg2-util.c src/tcti-uefi.c
