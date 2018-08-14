@@ -99,10 +99,10 @@ LOCAL_ADD_COMPILER_FLAG([-fshort-wchar])
 LOCAL_ADD_COMPILER_FLAG([-mno-red-zone])
 LOCAL_ADD_COMPILER_FLAG([-Wall])
 # flags added to EXTRA_LDFLAGS
-LOCAL_ADD_LINK_FLAG([-nostdlib])
-LOCAL_ADD_LINK_FLAG([-znocombreloc])
+LOCAL_ADD_LINK_FLAG([-Wl,-nostdlib])
+LOCAL_ADD_LINK_FLAG([-Wl,-znocombreloc])
 LOCAL_ADD_LINK_FLAG([-shared])
-LOCAL_ADD_LINK_FLAG([-Bsymbolic])
+LOCAL_ADD_LINK_FLAG([-Wl,-Bsymbolic])
 # flags added to EXTRA_OBJFLAGS
 EXTRA_OBJFLAGS="-j .text -j .sdata -j .data -j .dynamic -j .dynsym -j .rel -j .rela -j .reloc --target=efi-app-${ARCH}"
 EXTRA_CFLAGS="$EXTRA_CFLAGS -DARCH=$ARCH"

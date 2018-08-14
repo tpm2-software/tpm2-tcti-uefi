@@ -102,7 +102,7 @@ test_tcti_uefi_finalize_unit_SOURCES = test/tcti-uefi-finalize_unit.c
 
 # pattern rule to link intermediate shared object
 %.so: %.o
-	$(LD) $(LDFLAGS) $(EXTRA_LDFLAGS) $^ -o $@ -Bstatic $(EXTRA_LDLIBS)
+	$(CC) $(LDFLAGS) $(EXTRA_LDFLAGS) $^ -o $@ -Bstatic $(EXTRA_LDLIBS)
 
 # pattern to transform intermediate shared object into efi executable
 %.efi: %.so
