@@ -23,8 +23,6 @@ typedef struct {
 TSS2_TCTI_UEFI_CONTEXT*
 tcti_uefi_context_cast (TSS2_TCTI_CONTEXT *tcti_ctx);
 TSS2_RC
-tcti_uefi_init (TSS2_TCTI_CONTEXT **ctx);
-TSS2_RC
 tcti_uefi_receive (TSS2_TCTI_CONTEXT *context,
                    size_t *size,
                    uint8_t *response,

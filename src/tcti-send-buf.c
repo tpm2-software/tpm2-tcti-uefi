@@ -11,6 +11,7 @@
 
 #include "tcg2-util.h"
 #include "tcti-uefi.h"
+#include "tss2-util.h"
 
 #define TPM2_HEADER_SIZE 10
 

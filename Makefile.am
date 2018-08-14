@@ -5,7 +5,7 @@ AM_CFLAGS = -I$(srcdir)/src -Itpm2-tss/src -Itpm2-tss/include/tss2
 
 TESTS = $(check_PROGRAMS)
 lib_LIBRARIES = src/libtss2-mu-uefi.a src/libtss2-sys-uefi.a src/libtss2-tcti-uefi.a
-noinst_LIBRARIES = test/libtest-util.a
+noinst_LIBRARIES = src/libutil.a test/libtest-util.a
 check_PROGRAMS = \
     test/tcti-uefi-cast_unit \
     test/tcti-uefi-finalize_unit \
@@ -38,6 +38,9 @@ EXTRA_DIST = \
     VERSION
 
 # rules to build libraries
+src_libutil_a_CFLAGS = $(EXTRA_CFLAGS) $(AM_CFLAGS)
+src_libutil_a_SOURCES = src/tcg2-util.c src/tss2-util.c
+
 src_libtss2_mu_uefi_a_CFLAGS = $(EXTRA_CFLAGS) $(AM_CFLAGS) -DMAXLOGLEVEL=0
 src_libtss2_mu_uefi_a_SOURCES = $(TSS2_MU_C) $(TSS2_UTIL_C)
 
@@ -52,8 +55,8 @@ src/get-capability.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
 src/get-capability.so: src/get-capability.o src/libtss2-tcti-uefi.a
 
 src/tcti-send-buf.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
-src/tcti-send-buf.so: src/tcti-send-buf.o src/libtss2-tcti-uefi.a \
-    src/libtss2-mu-uefi.a
+src/tcti-send-buf.so: src/tcti-send-buf.o src/libutil.a \
+    src/libtss2-tcti-uefi.a src/libtss2-mu-uefi.a
 
 # rule to extract contributors from git history & generate AUTHORS file
 AUTHORS :
