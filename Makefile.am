@@ -16,7 +16,7 @@ check_PROGRAMS = \
 all-local: \
     AUTHORS \
     src/get-capability.efi \
-    src/tcti-send-buf.efi
+    src/tpm2-get-capability.efi
 clean-local:
 	rm -rf $(CLEANS)
 	find tpm2-tss/src -name '*.o' | xargs rm -f
@@ -39,7 +39,7 @@ EXTRA_DIST = \
 
 # rules to build libraries
 src_libutil_a_CFLAGS = $(EXTRA_CFLAGS) $(AM_CFLAGS)
-src_libutil_a_SOURCES = src/tcg2-util.c src/tss2-util.c
+src_libutil_a_SOURCES = src/tcg2-util.c src/tss2-util.c src/compat.c
 
 src_libtss2_mu_uefi_a_CFLAGS = $(EXTRA_CFLAGS) $(AM_CFLAGS) -DMAXLOGLEVEL=0
 src_libtss2_mu_uefi_a_SOURCES = $(TSS2_MU_C) $(TSS2_UTIL_C)
@@ -54,9 +54,10 @@ src_libtss2_tcti_uefi_a_SOURCES = src/tcg2-util.c src/tcti-uefi.c
 src/get-capability.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
 src/get-capability.so: src/get-capability.o src/libtss2-tcti-uefi.a
 
-src/tcti-send-buf.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
-src/tcti-send-buf.so: src/tcti-send-buf.o src/libutil.a \
-    src/libtss2-tcti-uefi.a src/libtss2-mu-uefi.a
+src/tpm2-get-capability.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
+src/tpm2-get-capability.so: LDFLAGS+=-Wl,--no-undefined
+src/tpm2-get-capability.so: src/tpm2-get-capability.o src/libutil.a \
+    src/libtss2-tcti-uefi.a src/libtss2-sys-uefi.a src/libtss2-mu-uefi.a
 
 # rule to extract contributors from git history & generate AUTHORS file
 AUTHORS :
