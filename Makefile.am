@@ -1,7 +1,6 @@
 # SPDK-License-Identifier: BSD-2
 #
 .PHONY: example
-include tss2-src-vars.mk
 AM_CFLAGS = -I$(srcdir)/src -I$(srcdir)/tpm2-tss/src -I$(srcdir)/tpm2-tss/include/tss2
 
 TESTS = $(check_PROGRAMS)
@@ -66,10 +65,12 @@ example/tpm2-get-capability.$(OBJEXT): example/tpm2-get-capability.c | example/.
 # dependency expression for shared objects built for the UEFI executables
 example/get-capability.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
 example/get-capability.so: LDFLAGS+=-Wl,--no-undefined
+example/get-capability.so: LDLIBS+=-l:libtss2-sys.a -l:libtss2-mu.a
 example/get-capability.so: example/get-capability.o src/tcg2-util.o
 
 example/tpm2-get-capability.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
 example/tpm2-get-capability.so: LDFLAGS+=-Wl,--no-undefined
+example/tpm2-get-capability.so: LDLIBS+=-l:libtss2-sys.a -l:libtss2-mu.a
 example/tpm2-get-capability.so: \
     example/tpm2-get-capability.o example/tss2-util.o example/compat.o \
     example/libtss2-sys-uefi.a example/libtss2-mu-uefi.a \
@@ -121,7 +122,7 @@ endif
 
 # pattern rule to link intermediate shared object
 %.so: %.o
-	$(CC) $(LDFLAGS) $(EXTRA_LDFLAGS) $^ -o $@ -Bstatic $(EXTRA_LDLIBS)
+	$(CC) $(LDFLAGS) $(EXTRA_LDFLAGS) $^ -o $@ -Bstatic $(LDLIBS) $(EXTRA_LDLIBS)
 
 # pattern to transform intermediate shared object into efi executable
 %.efi: %.so
