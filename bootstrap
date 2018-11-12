@@ -1,26 +1,5 @@
 #!/bin/sh
 # SPDK-License-Identifier: BSD-2
 
-# generate list of source files for use in Makefile.am
-# if you add new source files, you must run ./bootstrap again
-VARS_FILE=tss2-src-vars.mk
-TSS2_SRC=tpm2-tss/src
-src_listvar () {
-    basedir=$1
-    suffix=$2
-    var=$3
-
-    find "${basedir}" -name "${suffix}" | LC_ALL=C sort | tr '\n' ' ' | (printf "${var} = " && cat)
-    echo ""
-}
-
 git describe --tags --always --dirty > VERSION
-git submodule update --init --recursive
-
-(
-  src_listvar "${TSS2_SRC}/util" "*.c" "TSS2_UTIL_C"
-  src_listvar "${TSS2_SRC}/tss2-mu" "*.c" "TSS2_MU_C"
-  src_listvar "${TSS2_SRC}/tss2-sys" "*.c" "TSS2_SYS_C"
-) > ${VARS_FILE}
-
 autoreconf --install --sym
