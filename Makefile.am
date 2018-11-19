@@ -1,11 +1,15 @@
 # SPDK-License-Identifier: BSD-2
 #
+.PHONY: example
 include tss2-src-vars.mk
 AM_CFLAGS = -I$(srcdir)/src -Itpm2-tss/src -Itpm2-tss/include/tss2
 
 TESTS = $(check_PROGRAMS)
-lib_LIBRARIES = src/libtss2-mu-uefi.a src/libtss2-sys-uefi.a src/libtss2-tcti-uefi.a
-noinst_LIBRARIES = test/libtest-util.a
+lib_LIBRARIES = src/libtss2-tcti-uefi.a
+noinst_LIBRARIES = \
+    example/libtss2-mu-uefi.a \
+    example/libtss2-sys-uefi.a \
+    test/libtest-util.a
 check_PROGRAMS = \
     test/tcti-uefi-cast_unit \
     test/tcti-uefi-finalize_unit \
@@ -13,10 +17,12 @@ check_PROGRAMS = \
     test/tcti-uefi-receive_unit \
     test/tcti-uefi-transmit_unit
 
-all-local: \
-    AUTHORS \
+all-local: AUTHORS
+
+example: \
     example/get-capability.efi \
     example/tpm2-get-capability.efi
+
 clean-local:
 	rm -rf $(CLEANS)
 	find tpm2-tss/src -name '*.o' | xargs rm -f
@@ -40,14 +46,15 @@ EXTRA_DIST = \
     VERSION
 
 # rules to build libraries
-src_libtss2_mu_uefi_a_CFLAGS = $(EXTRA_CFLAGS) $(AM_CFLAGS) -DMAXLOGLEVEL=0
-src_libtss2_mu_uefi_a_SOURCES = $(TSS2_MU_C) $(TSS2_UTIL_C)
-
-src_libtss2_sys_uefi_a_CFLAGS = $(EXTRA_CFLAGS) $(AM_CFLAGS) -I$(srcdir)/tpm2-tss/src/tss2-sys/ -DMAXLOGLEVEL=0
-src_libtss2_sys_uefi_a_SOURCES = $(TSS2_SYS_C) $(TSS2_UTIL_C)
-
 src_libtss2_tcti_uefi_a_CFLAGS = $(EXTRA_CFLAGS) $(AM_CFLAGS)
 src_libtss2_tcti_uefi_a_SOURCES = src/tcg2-util.c src/tcti-uefi.c
+
+# rules to build tpm2-tss libraries for the example uefi application
+example_libtss2_mu_uefi_a_CFLAGS = $(EXTRA_CFLAGS) $(AM_CFLAGS) -DMAXLOGLEVEL=0
+example_libtss2_mu_uefi_a_SOURCES = $(TSS2_MU_C) $(TSS2_UTIL_C)
+
+example_libtss2_sys_uefi_a_CFLAGS = $(EXTRA_CFLAGS) $(AM_CFLAGS) -I$(srcdir)/tpm2-tss/src/tss2-sys/ -DMAXLOGLEVEL=0
+example_libtss2_sys_uefi_a_SOURCES = $(TSS2_SYS_C) $(TSS2_UTIL_C)
 
 # hack to ensure .deps directory required by autotools is created in the
 # 'example' directory before we build any targets
@@ -62,9 +69,10 @@ example/get-capability.so: example/get-capability.o src/libtss2-tcti-uefi.a
 
 example/tpm2-get-capability.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
 example/tpm2-get-capability.so: LDFLAGS+=-Wl,--no-undefined
-example/tpm2-get-capability.so: example/tpm2-get-capability.o \
-    example/tss2-util.o example/compat.o src/libtss2-tcti-uefi.a \
-    src/libtss2-sys-uefi.a src/libtss2-mu-uefi.a
+example/tpm2-get-capability.so: \
+    example/tpm2-get-capability.o example/tss2-util.o example/compat.o \
+    example/libtss2-sys-uefi.a example/libtss2-mu-uefi.a \
+    src/libtss2-tcti-uefi.a
 
 # rule to extract contributors from git history & generate AUTHORS file
 AUTHORS :
