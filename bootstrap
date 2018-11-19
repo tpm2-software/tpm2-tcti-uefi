@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDK-License-Identifier: BSD-2
 
 # generate list of source files for use in Makefile.am
 # if you add new source files, you must run ./bootstrap again

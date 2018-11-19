@@ -1,3 +1,4 @@
+/* SPDK-License-Identifier: BSD-2 */
 #ifndef UEFI_WRAPS_H
 #define UEFI_WRAPS_H
 

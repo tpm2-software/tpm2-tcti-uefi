@@ -1,3 +1,4 @@
+/* SPDK-License-Identifier: BSD-2 */
 #ifndef TCTI_UEFI_WRAPS_H
 #define TCTI_UEFI_WRAPS_H
 
