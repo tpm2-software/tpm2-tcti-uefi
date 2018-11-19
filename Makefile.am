@@ -10,12 +10,14 @@ noinst_LIBRARIES = \
     example/libtss2-mu-uefi.a \
     example/libtss2-sys-uefi.a \
     test/libtest-util.a
+if UNIT
 check_PROGRAMS = \
     test/tcti-uefi-cast_unit \
     test/tcti-uefi-finalize_unit \
     test/tcti-uefi-init_unit \
     test/tcti-uefi-receive_unit \
     test/tcti-uefi-transmit_unit
+endif
 
 all-local: AUTHORS
 
@@ -84,6 +86,7 @@ TEST_WRAPS = -Wl,--wrap=AllocatePool,--wrap=CopyMem,--wrap=FreePool \
     -Wl,--wrap=Print,--wrap=tcg2_get_capability,--wrap=tcg2_get_max_buf \
     -Wl,--wrap=tcg2_get_protocol,--wrap=tcg2_submit_command
 
+if UNIT
 # rule to build test utility library
 test_libtest_util_a_CFLAGS = $(EXTRA_CFLAGS) $(AM_CFLAGS)
 test_libtest_util_a_SOURCES = test/tcti-uefi-wraps.c
@@ -113,6 +116,7 @@ test_tcti_uefi_finalize_unit_CFLAGS = $(TEST_FLAGS)
 test_tcti_uefi_finalize_unit_LDADD = $(TEST_LIBS)
 test_tcti_uefi_finalize_unit_LDFLAGS = $(TEST_WRAPS)
 test_tcti_uefi_finalize_unit_SOURCES = test/tcti-uefi-finalize_unit.c
+endif
 
 # pattern rule to link intermediate shared object
 %.so: %.o
