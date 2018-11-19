@@ -25,7 +25,18 @@ AC_CONFIG_FILES([Makefile])
 AC_CHECK_TOOL([OBJCOPY], objcopy, [AC_MSG_ERROR([Missing required tool: objcopy])])
 
 # unit test library
-PKG_CHECK_MODULES([CMOCKA],[cmocka])
+AC_ARG_ENABLE([unit],
+              [AS_HELP_STRING([--enable-unit],
+                   [build cmocka unit tests (default is no)])],
+              [enable_unit=$enableval],
+              [enable_unit=no])
+AS_IF([test "x$enable_unit" != xno],
+      [PKG_CHECK_MODULES([CMOCKA],
+                         [cmocka >= 1.0],
+                         [AC_DEFINE([HAVE_CMOCKA],
+                                    [1],
+                                    [cmocka is available])])])
+AM_CONDITIONAL([UNIT], [test "x$enable_unit" != xno])
 
 # directory where gnu-efi headers live
 AC_ARG_WITH([efi-includedir],
