@@ -1,3 +1,4 @@
+/* SPDK-License-Identifier: BSD-2 */
 #include <efi/efi.h>
 #include <efi/efilib.h>
 

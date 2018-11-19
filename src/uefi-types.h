@@ -1,3 +1,4 @@
+/* SPDK-License-Identifier: BSD-2 */
 #ifndef UEFI_TYPES_H
 #define UEFI_TYPES_H
 
