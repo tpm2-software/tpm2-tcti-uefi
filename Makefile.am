@@ -2,7 +2,7 @@
 #
 .PHONY: example
 include tss2-src-vars.mk
-AM_CFLAGS = -I$(srcdir)/src -Itpm2-tss/src -Itpm2-tss/include/tss2
+AM_CFLAGS = -I$(srcdir)/src -I$(srcdir)/tpm2-tss/src -I$(srcdir)/tpm2-tss/include/tss2
 
 TESTS = $(check_PROGRAMS)
 lib_LIBRARIES = src/libtss2-tcti-uefi.a
