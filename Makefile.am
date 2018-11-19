@@ -5,7 +5,7 @@ AM_CFLAGS = -I$(srcdir)/src -Itpm2-tss/src -Itpm2-tss/include/tss2
 
 TESTS = $(check_PROGRAMS)
 lib_LIBRARIES = src/libtss2-mu-uefi.a src/libtss2-sys-uefi.a src/libtss2-tcti-uefi.a
-noinst_LIBRARIES = src/libutil.a test/libtest-util.a
+noinst_LIBRARIES = example/libutil.a test/libtest-util.a
 check_PROGRAMS = \
     test/tcti-uefi-cast_unit \
     test/tcti-uefi-finalize_unit \
@@ -15,20 +15,20 @@ check_PROGRAMS = \
 
 all-local: \
     AUTHORS \
-    src/get-capability.efi \
-    src/tpm2-get-capability.efi
+    example/get-capability.efi \
+    example/tpm2-get-capability.efi
 clean-local:
 	rm -rf $(CLEANS)
 	find tpm2-tss/src -name '*.o' | xargs rm -f
 
 CLEANS = \
     AUTHORS \
-    src/get-capability.efi \
-    src/get-capability.so \
+    example/get-capability.efi \
+    example/get-capability.so \
     src/tcti-send-buf.efi \
     src/tcti-send-buf.so \
-    src/tpm2-get-capability.efi \
-    src/tpm2-get-capability.so
+    example/tpm2-get-capability.efi \
+    example/tpm2-get-capability.so
 
 EXTRA_DIST = \
     AUTHORS \
@@ -40,9 +40,6 @@ EXTRA_DIST = \
     VERSION
 
 # rules to build libraries
-src_libutil_a_CFLAGS = $(EXTRA_CFLAGS) $(AM_CFLAGS)
-src_libutil_a_SOURCES = src/tcg2-util.c src/tss2-util.c src/compat.c
-
 src_libtss2_mu_uefi_a_CFLAGS = $(EXTRA_CFLAGS) $(AM_CFLAGS) -DMAXLOGLEVEL=0
 src_libtss2_mu_uefi_a_SOURCES = $(TSS2_MU_C) $(TSS2_UTIL_C)
 
@@ -52,13 +49,23 @@ src_libtss2_sys_uefi_a_SOURCES = $(TSS2_SYS_C) $(TSS2_UTIL_C)
 src_libtss2_tcti_uefi_a_CFLAGS = $(EXTRA_CFLAGS) $(AM_CFLAGS)
 src_libtss2_tcti_uefi_a_SOURCES = src/tcg2-util.c src/tcti-uefi.c
 
-# dependency expression for shared objects built for the UEFI executables
-src/get-capability.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
-src/get-capability.so: src/get-capability.o src/libtss2-tcti-uefi.a
+example_libutil_a_CFLAGS = $(EXTRA_CFLAGS) $(AM_CFLAGS)
+example_libutil_a_SOURCES = example/tss2-util.c example/compat.c
 
-src/tpm2-get-capability.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
-src/tpm2-get-capability.so: LDFLAGS+=-Wl,--no-undefined
-src/tpm2-get-capability.so: src/tpm2-get-capability.o src/libutil.a \
+# hack to ensure .deps directory required by autotools is created in the
+# 'example' directory before we build any targets
+example/.deps:
+	mkdir -p $@
+example/get-capability.$(OBJEXT): example/get-capability.c | example/.deps
+example/tpm2-get-capability.$(OBJEXT): example/tpm2-get-capability.c | example/.deps
+
+# dependency expression for shared objects built for the UEFI executables
+example/get-capability.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
+example/get-capability.so: example/get-capability.o src/libtss2-tcti-uefi.a
+
+example/tpm2-get-capability.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
+example/tpm2-get-capability.so: LDFLAGS+=-Wl,--no-undefined
+example/tpm2-get-capability.so: example/tpm2-get-capability.o example/libutil.a \
     src/libtss2-tcti-uefi.a src/libtss2-sys-uefi.a src/libtss2-mu-uefi.a
 
 # rule to extract contributors from git history & generate AUTHORS file
