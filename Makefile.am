@@ -26,7 +26,9 @@ CLEANS = \
     src/get-capability.efi \
     src/get-capability.so \
     src/tcti-send-buf.efi \
-    src/tcti-send-buf.so
+    src/tcti-send-buf.so \
+    src/tpm2-get-capability.efi \
+    src/tpm2-get-capability.so
 
 EXTRA_DIST = \
     AUTHORS \
