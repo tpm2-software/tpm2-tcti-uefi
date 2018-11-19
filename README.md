@@ -24,6 +24,5 @@ Currently all tests are implemented as unit tests. We use the cmocka library
 to "mock" the interfaces between code modules.
 
 # Source Layout
-./
-├── src  - source code and headers for `libtss2-tcti-uefi.a`
+├── src  - source code and headers for `libtss2-tcti-uefi.a`  
 └── test - unit tests
