@@ -31,8 +31,6 @@ CLEANS = \
     AUTHORS \
     example/get-capability.efi \
     example/get-capability.so \
-    src/tcti-send-buf.efi \
-    src/tcti-send-buf.so \
     example/tpm2-get-capability.efi \
     example/tpm2-get-capability.so
 
