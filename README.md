@@ -16,12 +16,10 @@ We also have an IRC channel set up on [FreeNode](https://freenode.net/)
 called \#tpm2.0-tss.
 
 # Test Cases
-The automake parallel test harness is used to build and run unit tests when
-the `check` target is executed:
+Unit tests must be explicitly enabled using the configure script. Use the
+`-help` option to the `configure` script for documentation. If enabled, unit
+tests are executed using the `check` make target:
 > make check
-
-Currently all tests are implemented as unit tests. We use the cmocka library
-to "mock" the interfaces between code modules.
 
 # Source Layout
 ├── src  - source code and headers for `libtss2-tcti-uefi.a`  
