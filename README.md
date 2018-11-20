@@ -22,5 +22,6 @@ tests are executed using the `check` make target:
 > make check
 
 # Source Layout
+├── example - sample code using UEFI TCG2 protocol and tpm2-tss libraries
 ├── src  - source code and headers for `libtss2-tcti-uefi.a`  
 └── test - unit tests
