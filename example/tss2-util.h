@@ -1,4 +1,4 @@
-/* SPDK-License-Identifier: BSD-2 */
+/* SPDX-License-Identifier: BSD-2 */
 #ifndef TSS2_UTIL_H
 #define TSS2_UTIL_H
 

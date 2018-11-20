@@ -1,4 +1,4 @@
-/* SPDK-License-Identifier: BSD-2 */
+/* SPDX-License-Identifier: BSD-2 */
 #ifndef TCG2_UTIL_H
 #define TCG2_UTIL_H
 
