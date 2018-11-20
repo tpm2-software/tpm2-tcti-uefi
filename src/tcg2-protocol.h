@@ -1,4 +1,4 @@
-/* SPDK-License-Identifier: BSD-2 */
+/* SPDX-License-Identifier: BSD-2 */
 #ifndef TCG2_PROTOCOL_H
 #define TCG2_PROTOCOL_H 1
 

@@ -1,4 +1,4 @@
-/* SPDK-License-Identifier: BSD-2 */
+/* SPDX-License-Identifier: BSD-2 */
 #include <endian.h>
 #include <inttypes.h>
 
