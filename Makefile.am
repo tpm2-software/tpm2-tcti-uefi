@@ -65,7 +65,8 @@ example/tpm2-get-capability.$(OBJEXT): example/tpm2-get-capability.c | example/.
 
 # dependency expression for shared objects built for the UEFI executables
 example/get-capability.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
-example/get-capability.so: example/get-capability.o src/libtss2-tcti-uefi.a
+example/get-capability.so: LDFLAGS+=-Wl,--no-undefined
+example/get-capability.so: example/get-capability.o src/tcg2-util.o
 
 example/tpm2-get-capability.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
 example/tpm2-get-capability.so: LDFLAGS+=-Wl,--no-undefined
