@@ -69,7 +69,7 @@ example/tpm2-get-capability.so: LDFLAGS+=-Wl,--no-undefined
 example/tpm2-get-capability.so: LDLIBS+=-l:libtss2-sys.a -l:libtss2-mu.a
 example/tpm2-get-capability.so: \
     example/tpm2-get-capability.o example/tss2-util.o example/compat.o \
-    example/compat.h src/libtss2-tcti-uefi.a
+    src/libtss2-tcti-uefi.a
 
 # rule to extract contributors from git history & generate AUTHORS file
 AUTHORS :
