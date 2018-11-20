@@ -63,7 +63,7 @@ AC_ARG_WITH([efi-lds],
 AC_CHECK_FILE(["${with_efi_lds}"],
               [],
               [AC_MSG_ERROR([Missing file: ${with_efi_lds}.])])
-EXTRA_LDFLAGS="-L /usr/lib -L /usr/lib64 -T ${with_efi_lds}"
+EXTRA_LDFLAGS="-L /usr/lib -L /usr/lib64 -Wl,--script=${with_efi_lds}"
 
 # path to object file from gnu-efi
 AC_ARG_WITH([efi-crt0],
