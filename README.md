@@ -8,6 +8,11 @@ applications.
 Instructions to build and install `libtss2-tcti-uefi.a` are available in
 the [INSTALL](INSTALL.md) file.
 
+# Source Layout
+├── example - sample code using UEFI TCG2 protocol and tpm2-tss libraries  
+├── src  - source code and headers for `libtss2-tcti-uefi.a`  
+└── test - unit tests
+
 # Getting in Touch
 If you're looking to discuss the source code in this project or get some
 questions answered you should join the 01.org TPM2 mailing list:
@@ -20,8 +25,3 @@ Unit tests must be explicitly enabled using the configure script. Use the
 `-help` option to the `configure` script for documentation. If enabled, unit
 tests are executed using the `check` make target:
 > make check
-
-# Source Layout
-├── example - sample code using UEFI TCG2 protocol and tpm2-tss libraries  
-├── src  - source code and headers for `libtss2-tcti-uefi.a`  
-└── test - unit tests
