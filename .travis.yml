@@ -1,0 +1,19 @@
+dist: xenial
+language: c
+compiler:
+  - gcc
+  - clang
+
+addons:
+  apt:
+    packages:
+      - autoconf
+      - automake
+      - gnu-efi
+      - libcmocka-dev
+      - libcmocka0
+
+script:
+  - ./bootstrap
+  - ./configure --enable-unit
+  - make --jobs=$(($(nproc)*3/2)) distcheck
