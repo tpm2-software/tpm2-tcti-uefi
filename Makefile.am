@@ -15,6 +15,9 @@ check_PROGRAMS = \
     test/tcti-uefi-transmit_unit
 endif
 
+tss2dir = $(includedir)/tss2
+tss2_HEADERS = src/tss2-tcti-uefi.h
+
 all-local: AUTHORS
 
 example: \
