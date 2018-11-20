@@ -19,11 +19,11 @@
  * parameter.
  */
 typedef struct {
-    TSS2_TCTI_UEFI_CONTEXT uefi_ctx;
-    TSS2_TCTI_CONTEXT *tcti_ctx;
     TSS2_RC rc;
     uint8_t buf[1];
     size_t size;
+    TSS2_TCTI_CONTEXT *tcti_ctx;
+    TSS2_TCTI_UEFI_CONTEXT uefi_ctx;
 } data_t;
 
 /* We maintain a single global instance of the test data structure. */
