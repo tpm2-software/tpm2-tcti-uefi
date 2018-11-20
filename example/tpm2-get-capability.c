@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: BSD-2 */
 #include <endian.h>
 #include <inttypes.h>
+#include <string.h>
 
 #include <efi/efi.h>
 #include <efi/efilib.h>
