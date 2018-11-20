@@ -20,16 +20,6 @@ isspace (int c)
     }
     return 0;
 }
-/*
- */
-void*
-memcpy (void *dest,
-        const void *src,
-        size_t count)
-{
-    CopyMem (dest, src, count);
-    return dest;
-}
 void*
 memmove (void *dest,
          const void *src,
@@ -37,12 +27,4 @@ memmove (void *dest,
 {
     CopyMem (dest, src, count);
     return dest;
-}
-void*
-memset (void *s,
-        int c,
-        size_t n)
-{
-    SetMem (s, n, c);
-    return s;
 }

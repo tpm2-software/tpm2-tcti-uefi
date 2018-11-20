@@ -5,7 +5,7 @@ This file contains instructions for building and installing tss2-tcti-uefi.
 * GNU Automake
 * C compiler
 * linker
-* gnu-efi
+* gnu-efi (>= 3.0.8)
 * tpm2-tss
 
 # Build Instructions
