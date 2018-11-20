@@ -1,2 +1,2 @@
-CFLAGS="-fno-stack-protector -fPIC -fshort-wchar -mno-red-zone -DMAXLOGLEVEL=0 -Wall"
+CFLAGS="-fno-stack-protector -fPIC -fshort-wchar -mno-red-zone -Wall"
 LDFLAGS="-Wl,-nostdlib -Wl,-znocombreloc -Wl,-Bsymbolic"
