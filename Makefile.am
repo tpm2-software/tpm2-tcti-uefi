@@ -46,14 +46,17 @@ EXTRA_DIST = \
 
 # rules to build libraries
 src_libtss2_tcti_uefi_a_CFLAGS = $(EXTRA_CFLAGS) $(AM_CFLAGS)
-src_libtss2_tcti_uefi_a_SOURCES = src/tcg2-util.c src/tcti-uefi.c
+src_libtss2_tcti_uefi_a_SOURCES = src/tcti-uefi.c src/tcti-uefi.h \
+    src/tcg2-protocol.h src/uefi-types.h src/tcg2-util.c src/tcg2-util.h
 
 # hack to ensure .deps directory required by autotools is created in the
 # 'example' directory before we build any targets
 example/.deps:
 	mkdir -p $@
-example/get-capability.$(OBJEXT): example/get-capability.c | example/.deps
-example/tpm2-get-capability.$(OBJEXT): example/tpm2-get-capability.c | example/.deps
+example/get-capability.$(OBJEXT): example/get-capability.c \
+    src/tcg-protocol.h src/tcg-util.h | example/.deps
+example/tpm2-get-capability.$(OBJEXT): example/tpm2-get-capability.c \
+    example/compat.h example/tss2-util.h | example/.deps
 
 # dependency expression for shared objects built for the UEFI executables
 example/get-capability.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
@@ -66,7 +69,7 @@ example/tpm2-get-capability.so: LDFLAGS+=-Wl,--no-undefined
 example/tpm2-get-capability.so: LDLIBS+=-l:libtss2-sys.a -l:libtss2-mu.a
 example/tpm2-get-capability.so: \
     example/tpm2-get-capability.o example/tss2-util.o example/compat.o \
-    src/libtss2-tcti-uefi.a
+    example/compat.h src/libtss2-tcti-uefi.a
 
 # rule to extract contributors from git history & generate AUTHORS file
 AUTHORS :
@@ -83,7 +86,7 @@ TEST_WRAPS = -Wl,--wrap=AllocatePool,--wrap=CopyMem,--wrap=FreePool \
 if UNIT
 # rule to build test utility library
 test_libtest_util_a_CFLAGS = $(EXTRA_CFLAGS) $(AM_CFLAGS)
-test_libtest_util_a_SOURCES = test/tcti-uefi-wraps.c
+test_libtest_util_a_SOURCES = test/tcti-uefi-wraps.c test/tcti-uefi-wraps.h
 
 # rules to build test executables
 test_tcti_uefi_cast_unit_CFLAGS = $(TEST_FLAGS)
