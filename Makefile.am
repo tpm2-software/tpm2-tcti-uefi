@@ -54,7 +54,7 @@ src_libtss2_tcti_uefi_a_SOURCES = src/tcti-uefi.c src/tcti-uefi.h \
 example/.deps:
 	mkdir -p $@
 example/get-capability.$(OBJEXT): example/get-capability.c \
-    src/tcg-protocol.h src/tcg-util.h | example/.deps
+    src/tcg2-protocol.h src/tcg2-util.h | example/.deps
 example/tpm2-get-capability.$(OBJEXT): example/tpm2-get-capability.c \
     example/compat.h example/tss2-util.h | example/.deps
 
