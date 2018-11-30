@@ -7,8 +7,6 @@ dist: xenial
 addons:
   apt:
     packages:
-      - autoconf-archive
-      - doxygen
       - libcmocka-dev
       - libcmocka0
       - gnulib
