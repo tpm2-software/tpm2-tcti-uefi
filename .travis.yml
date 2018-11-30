@@ -1,7 +1,4 @@
 language: c
-compiler:
-  - gcc
-  - clang
 dist: xenial
 
 addons:
@@ -17,6 +14,13 @@ env:
     - JOBS="$(($(nproc)*3/2))"
     - PREFIX=/usr
     - MAKE="make --jobs=$JOBS"
+
+matrix:
+  include:
+    - compiler: clang
+      env: SCANBUILD="scan-build --status-bugs"
+    - compiler: gcc
+      env: SCANBUILD=
 
 after_failure:
   - cat tpm2-tcti-uefi-*/_build/sub/test-suite.log
@@ -41,6 +45,6 @@ before_script:
   - ./bootstrap
 
 script:
-  - ./configure --enable-unit
-  - $MAKE distcheck
-  - $MAKE example
+  - $SCANBUILD ./configure --enable-unit
+  - $SCANBUILD $MAKE distcheck
+  - $SCANBUILD $MAKE example
