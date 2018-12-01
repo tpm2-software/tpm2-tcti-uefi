@@ -17,6 +17,9 @@ env:
     - JOBS="$(($(nproc)*3/2))"
     - PREFIX=/usr
 
+after_failure:
+  - cat tpm2-tcti-uefi-*/_build/sub/test-suite.log
+
 install:
   - wget https://download.01.org/tpm2/autoconf-archive-2017.09.28.tar.xz
   - sha256sum autoconf-archive-2017.09.28.tar.xz | grep -q 5c9fb5845b38b28982a3ef12836f76b35f46799ef4a2e46b48e2bd3c6182fa01
@@ -38,5 +41,5 @@ before_script:
 
 script:
   - ./configure --enable-unit
-  - make --jobs=${JOBS} distcheck || cat test-suite.log
+  - make --jobs=${JOBS} distcheck
   - make --jobs=${JOBS} example
