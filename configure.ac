@@ -1,9 +1,9 @@
 # SPDK-License-Identifier: BSD-2
-AC_INIT([tpm2-uefi],
+AC_INIT([tpm2-tcti-uefi],
         [0.0.0],
-        [https://github.com/tpm2-software/tpm2-uefi/issues],
+        [https://github.com/tpm2-software/tpm2-tcti-uefi/issues],
         [],
-        [https://github.com/tpm2-software/tpm2-uefi])
+        [https://github.com/tpm2-software/tpm2-tcti-uefi])
 # bring canonical names for build tripple, we need target_cpu
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
