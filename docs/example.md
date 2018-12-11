@@ -55,3 +55,62 @@ function. It queries the TPM2 device for it's fixed properties by
 specifying the `TPM2_CAP_TPM_PROPERTIES` capability the `TPM2_PT_FIXED`
 property. This collection of properties is then displayed as UEFI shell
 output.
+
+## Running the example applications
+The example applications may be run from the UEFI shell on your computer.
+A test setup like this is often referred to as a "bare-metal" test
+environment. Alternatively they may be run in a simulated / virtual
+firmware environment using QEMU, OVMF and the swtpm daemon.
+
+Each configuration has its pros / cons. Primarily testing on "bare-metal"
+requires less setup and configuration but requires additional hardware or
+disruption to development caused by rebooting. A virtual test environment
+takes much longer to configure due to the additional software requirements
+however no extra hardware is needed and test cycles are very fast since no
+reboots are required.
+
+### bare metail
+Running the example applications on a "bare metal" system (PC / laptop)
+requires the ability to access the UEFI shell. The method and interface
+that allows access to UEFI and the shell is not standardized across
+platforms. It is common for firmware configuration interfaces to provide a
+graphical / menu interface that allows users to boot directly to the
+shell. Other less feature ritch platforms will provide an interface that
+allows users to create custom boot configurations that may be used to boot
+a UEFI application directly and this may be used to boot the shell.
+
+Given the variability in platforms disucssed above the specific method
+used to launch the shell is outside the scope of this document. Instead
+we recommend the reader consult the Intel UEFI shell documentation:
+https://software.intel.com/en-us/articles/uefi-shell
+
+Once you're able to boot to the UEFI shell, the `.efi` executables for
+the example UEFI applications must be built and copied to a FAT partition
+accessible from the shell. They can then be executed like any other UEFI
+application.
+
+### QEMU, OVMF and swtpm
+An alternative method we can use to run these example applications is to
+use emulation instead of a physical system. Though there are likely many
+different ways to achieve this, we limit our discussion to QEMU, OVMF and
+swtpm. Typically the QEMU and OVMF components can be installed using the
+package management system in your Linux distro. Both versions currently
+shipping with Debian Buster (2.12.1 and 20181115 respectively) support all
+of the features we require.
+
+The `swtpm` software must currently be built from source. You should
+follow the build and installation instructions from the swtpm source
+repo: https://github.com/stefanberger/swtpm and their wiki:
+https://github.com/stefanberger/swtpm/wiki.
+
+Once all dependencies are satisfied we start by creating a `swtpm`
+instance. It should be configured to be a TPM2 device and to expose a
+socket interface for use by QEMU. We provide a referece script that we
+use to automate this process in testing: lib/swtpm2.sh.
+
+Once the `swtpm` instance is running we run `qemu` for the `x86_64`
+architecture using the OVMF image installed by the package manager and
+configured to use our `swtpm` instance as the TPM2 device. The details of
+each QEMU command line option used is beyond the scope of this document.
+Instead we provide an example script to start `qemu` in an example
+configuration: lib/qemu-tpm2.sh.
