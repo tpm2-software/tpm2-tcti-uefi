@@ -24,3 +24,7 @@ called \#tpm2.0-tss.
 
 # Test Cases
 Test strategy and cases are documented in [docs/test.md](docs/test.md).
+
+# Examples
+Several example UEFI executables are provided for reference and documented
+in [docs/example.md](docs/example.md).
