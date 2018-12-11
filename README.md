@@ -23,7 +23,4 @@ We also have an IRC channel set up on [FreeNode](https://freenode.net/)
 called \#tpm2.0-tss.
 
 # Test Cases
-Unit tests must be explicitly enabled using the configure script. Use the
-`-help` option to the `configure` script for documentation. If enabled, unit
-tests are executed using the `check` make target:
-> make check
+Test strategy and cases are documented in [docs/test.md](docs/test.md).
