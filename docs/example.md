@@ -43,7 +43,7 @@ function is different from the `TPM2_GetCapability` command from the TPM2
 specification.
 
 ## Get TPM2 Fixed Properties with libtss2-sys
-The `tpm2-get-capability.efi` example UEFI executable demonstrates use of
+The `tpm2-get-caps-fixed.efi` example UEFI executable demonstrates use of
 the TCG system API (aka `libtss2-sys`). In order to use `libtss2-sys` in
 this UEFI application we must have an instance of the UEFI TCTI from
 `libtss2-tcti-uefi`. An instance of this TCTI must be passed to the
