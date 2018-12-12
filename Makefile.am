@@ -33,7 +33,8 @@ CLEANS = \
     example/get-capability.efi \
     example/get-capability.so \
     example/tpm2-get-capability.efi \
-    example/tpm2-get-capability.so
+    example/tpm2-get-capability.so \
+    example/*.$(OBJEXT)
 
 EXTRA_DIST = \
     AUTHORS \
