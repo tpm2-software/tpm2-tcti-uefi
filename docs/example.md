@@ -28,7 +28,7 @@ be built by executing the `example` make target:
 > make example
 
 ## Query TCG EFI Protocol for capabilities
-The `get-capability.efi` example UEFI executable demonstrates use of the
+The `tcg2-get-caps.efi` example UEFI executable demonstrates use of the
 TCG2 UEFI protocol. Looking at the UEFI environment as an operating
 system the TCG2 UEFI protocol is analogous to an OS driver. It presents
 us with a very primitive interface to the TPM2 device with a design that
