@@ -1,50 +1,21 @@
 language: c
-dist: xenial
+services:
+  - docker
 
-addons:
-  apt:
-    packages:
-      - libcmocka-dev
-      - libcmocka0
-      - gnulib
-      - gnu-efi
+git:
+  depth: 1
 
 env:
-  global:
-    - JOBS="$(($(nproc)*3/2))"
-    - PREFIX=/usr
-    - MAKE="make --jobs=$JOBS"
-
-matrix:
-  include:
-    - compiler: clang
-      env: SCANBUILD="scan-build --status-bugs"
-    - compiler: gcc
-      env: SCANBUILD=
+  matrix:
+    - CC="clang" SCANBUILD="scan-build --status-bugs"
+    - CC="gcc" SCANBUILD=""
 
 after_failure:
   - cat tpm2-tcti-uefi-*/_build/sub/test-suite.log
 
 install:
-  - wget https://download.01.org/tpm2/autoconf-archive-2017.09.28.tar.xz
-  - sha256sum autoconf-archive-2017.09.28.tar.xz | grep -q 5c9fb5845b38b28982a3ef12836f76b35f46799ef4a2e46b48e2bd3c6182fa01
-  - tar xJf autoconf-archive-2017.09.28.tar.xz && pushd autoconf-archive-2017.09.28
-  - ./configure --prefix=${PREFIX}
-  - $MAKE
-  - sudo $MAKE install
-  - popd
-  - git clone -b master --single-branch https://github.com/tpm2-software/tpm2-tss.git
-  - pushd tpm2-tss
-  - ./bootstrap --include=/usr/share/gnulib/m4
-  - CONFIG_SITE=../lib/tss2-sys_config.site ./configure --prefix=${PREFIX} --disable-defaultflags --disable-doxygen-doc --disable-tcti-device --disable-tcti-mssim --disable-esapi --with-maxloglevel=none
-  - $MAKE
-  - sudo $MAKE install
-  - popd
-
-before_script:
-  - ./bootstrap
+  - docker build -t tpm2-tcti-uefi:builder --target builder .
 
 script:
-  - $SCANBUILD ./configure --enable-unit
-  - $SCANBUILD $MAKE distcheck
-  - $SCANBUILD $MAKE example
+  - docker run --rm -v $PWD:/src/tpm2-tcti-uefi -e CC="${CC}" -e SCANBUILD="${SCANBUILD}" tpm2-tcti-uefi:builder ./build.sh
+  - docker run --rm -v $PWD:/src/tpm2-tcti-uefi tpm2-tcti-uefi:builder ./example/run.sh
