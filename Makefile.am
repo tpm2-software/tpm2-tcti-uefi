@@ -21,6 +21,7 @@ tss2_HEADERS = src/tss2-tcti-uefi.h
 all-local: AUTHORS
 
 example: \
+    example/hello-world.efi \
     example/tcg2-get-caps.efi \
     example/tpm2-get-caps-fixed.efi
 
@@ -29,6 +30,8 @@ clean-local:
 
 CLEANS = \
     AUTHORS \
+    example/hello-world.efi \
+    example/hello-world.so \
     example/tcg2-get-caps.efi \
     example/tcg2-get-caps.so \
     example/tpm2-get-caps-fixed.efi \
@@ -53,6 +56,7 @@ src_libtss2_tcti_uefi_a_SOURCES = src/tcti-uefi.c src/tcti-uefi.h \
 # 'example' directory before we build any targets
 example/.deps:
 	mkdir -p $@
+example/hello-world.$(OBJEXT): example/hello-world.c | example/.deps
 example/tcg2-get-caps.$(OBJEXT): example/tcg2-get-caps.c \
     src/tcg2-protocol.h src/tcg2-util.h | example/.deps
 example/tpm2-get-caps-fixed.$(OBJEXT): example/tpm2-get-caps-fixed.c \
@@ -69,6 +73,10 @@ example/tpm2-get-caps-fixed.so: LDLIBS+=-l:libtss2-sys.a -l:libtss2-mu.a
 example/tpm2-get-caps-fixed.so: \
     example/tpm2-get-caps-fixed.o example/tss2-util.o example/compat.o \
     src/libtss2-tcti-uefi.a
+
+example/hello-world.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
+example/hello-world.so: LDFLAGS+=-Wl,--no-undefined
+example/hello-world.so: example/hello-world.$(OBJEXT)
 
 # rule to extract contributors from git history & generate AUTHORS file
 AUTHORS :
