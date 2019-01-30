@@ -23,7 +23,8 @@ all-local: AUTHORS
 example: \
     example/hello-world.efi \
     example/tcg2-get-caps.efi \
-    example/tpm2-get-caps-fixed.efi
+    example/tpm2-get-caps-fixed.efi \
+    example/tss2-mu-uint32.efi
 
 clean-local:
 	rm -rf $(CLEANS)
@@ -36,6 +37,8 @@ CLEANS = \
     example/tcg2-get-caps.so \
     example/tpm2-get-caps-fixed.efi \
     example/tpm2-get-caps-fixed.so \
+    example/tss2-mu-uint32.efi \
+    example/tss2-mu-uint32.so \
     example/*.$(OBJEXT)
 
 EXTRA_DIST = \
@@ -61,6 +64,7 @@ example/tcg2-get-caps.$(OBJEXT): example/tcg2-get-caps.c \
     src/tcg2-protocol.h src/tcg2-util.h | example/.deps
 example/tpm2-get-caps-fixed.$(OBJEXT): example/tpm2-get-caps-fixed.c \
     example/compat.h example/tss2-util.h | example/.deps
+example/tss2-mu-uint32.$(OBJEXT): example/tss2-mu-uint32.c | example/.deps
 
 # dependency expression for shared objects built for the UEFI executables
 example/tcg2-get-caps.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
@@ -73,6 +77,11 @@ example/tpm2-get-caps-fixed.so: LDLIBS+=-l:libtss2-sys.a -l:libtss2-mu.a
 example/tpm2-get-caps-fixed.so: \
     example/tpm2-get-caps-fixed.o example/tss2-util.o example/compat.o \
     src/libtss2-tcti-uefi.a
+
+example/tss2-mu-uint32.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
+example/tss2-mu-uint32.so: LDFLAGS+=-Wl,--no-undefined
+example/tss2-mu-uint32.so: LDLIBS+=-l:libtss2-mu.a
+example/tss2-mu-uint32.so: example/tss2-mu-uint32.$(OBJEXT)
 
 example/hello-world.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
 example/hello-world.so: LDFLAGS+=-Wl,--no-undefined
