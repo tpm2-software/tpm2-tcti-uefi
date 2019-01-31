@@ -1,0 +1,10 @@
+fs0:
+@echo -off
+@command@
+echo ""
+if %lasterror% == 0 then
+    set RESET_MSG "Success"
+else
+    set RESET_MSG "Fail: Status = %lasterror%"
+endif
+reset -s "%RESET_MSG%"

@@ -38,6 +38,28 @@ AS_IF([test "x$enable_unit" != xno],
                                     [cmocka is available])])])
 AM_CONDITIONAL([UNIT], [test "x$enable_unit" != xno])
 
+# integration test
+AC_ARG_ENABLE([integration],
+              [AS_HELP_STRING([--enable-integration],
+                  [build and run integration tests (default is no)])],
+              [enable_integration=$enableval],
+              [enable_integration=no])
+AS_IF([test "x$enable_integration" != xno],
+      [AC_CHECK_PROG([SWTPM],
+                     swtpm,
+                     [yes],
+                     [AC_MSG_ERROR([Missing required program: swtpm])])
+       AC_CHECK_PROG([QEMU],
+                     qemu-system-x86_64,
+                     [yes],
+                     [AC_MSG_ERROR([Missing required program: qemu-system-x86_64])])
+       AC_ARG_WITH([ovmf],
+                    AS_HELP_STRING([--with-ovmf=PATH],
+                                   [Path to OVMF.fd]),
+                   [AC_SUBST([OVMF_PATH],[$withval])],
+                   [AC_SUBST([OVMF_PATH],[/usr/share/ovmf/OVMF.fd])])])
+AM_CONDITIONAL([INTEGRATION], [test "x$enable_integration" != xno])
+
 # directory where gnu-efi headers live
 AC_ARG_WITH([efi-includedir],
              AS_HELP_STRING([--with-efi-includedir=DIR],
