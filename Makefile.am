@@ -1,7 +1,7 @@
 # SPDK-License-Identifier: BSD-2
 #
 .PHONY: example
-AM_CFLAGS = -I$(srcdir)/src -I$(srcdir)/tpm2-tss/src -I$(srcdir)/tpm2-tss/include/tss2
+AM_CFLAGS = -I$(srcdir)/src
 
 TESTS = $(check_PROGRAMS)
 lib_LIBRARIES = src/libtss2-tcti-uefi.a
