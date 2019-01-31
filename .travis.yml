@@ -14,6 +14,7 @@ env:
     - JOBS="$(($(nproc)*3/2))"
     - PREFIX=/usr
     - MAKE="make --jobs=$JOBS"
+    - ACLOCAL_DIR="/usr/share/gnulib/m4"
 
 matrix:
   include:
@@ -35,7 +36,7 @@ install:
   - popd
   - git clone -b master --single-branch https://github.com/tpm2-software/tpm2-tss.git
   - pushd tpm2-tss
-  - ./bootstrap --include=/usr/share/gnulib/m4
+  - ./bootstrap
   - CONFIG_SITE=../lib/tss2-sys_config.site ./configure --prefix=${PREFIX} --disable-defaultflags --disable-doxygen-doc --disable-tcti-device --disable-tcti-mssim --disable-esapi --with-maxloglevel=none
   - $MAKE
   - sudo $MAKE install
