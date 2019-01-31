@@ -3,43 +3,49 @@
 .PHONY: example
 AM_CFLAGS = -I$(srcdir)/src
 
-TESTS = $(check_PROGRAMS)
+TESTS = $(TEST_UNIT) $(TEST_INTEGRATION)
 lib_LIBRARIES = src/libtss2-tcti-uefi.a
 noinst_LIBRARIES = test/libtest-util.a
+TEST_EXTENSIONS = .efi
+EFI_LOG_COMPILER = $(srcdir)/lib/efi-test-setup.sh
+EFI_LOG_FLAGS = --startup-template=$(srcdir)/lib/startup.nsh.template
 if UNIT
-check_PROGRAMS = \
+TEST_UNIT = \
     test/tcti-uefi-cast_unit \
     test/tcti-uefi-finalize_unit \
     test/tcti-uefi-init_unit \
     test/tcti-uefi-receive_unit \
     test/tcti-uefi-transmit_unit
 endif
-
+if INTEGRATION
+TEST_INTEGRATION = \
+    test/hello-world.efi \
+    test/tss2-mu-uint32.efi
+endif
+check_PROGRAMS = $(TEST_UNIT)
 tss2dir = $(includedir)/tss2
 tss2_HEADERS = src/tss2-tcti-uefi.h
 
 all-local: AUTHORS
 
 example: \
-    example/hello-world.efi \
     example/tcg2-get-caps.efi \
-    example/tpm2-get-caps-fixed.efi \
-    example/tss2-mu-uint32.efi
+    example/tpm2-get-caps-fixed.efi
 
 clean-local:
 	rm -rf $(CLEANS)
 
 CLEANS = \
     AUTHORS \
-    example/hello-world.efi \
-    example/hello-world.so \
     example/tcg2-get-caps.efi \
     example/tcg2-get-caps.so \
     example/tpm2-get-caps-fixed.efi \
     example/tpm2-get-caps-fixed.so \
-    example/tss2-mu-uint32.efi \
-    example/tss2-mu-uint32.so \
-    example/*.$(OBJEXT)
+    example/*.$(OBJEXT) \
+    test/hello-world.efi \
+    test/hello-world.so \
+    test/tss2-mu-uint32.efi \
+    test/tss2-mu-uint32.so
 
 EXTRA_DIST = \
     AUTHORS \
@@ -59,12 +65,12 @@ src_libtss2_tcti_uefi_a_SOURCES = src/tcti-uefi.c src/tcti-uefi.h \
 # 'example' directory before we build any targets
 example/.deps:
 	mkdir -p $@
-example/hello-world.$(OBJEXT): example/hello-world.c | example/.deps
+test/hello-world.$(OBJEXT): test/hello-world.c | example/.deps
 example/tcg2-get-caps.$(OBJEXT): example/tcg2-get-caps.c \
     src/tcg2-protocol.h src/tcg2-util.h | example/.deps
 example/tpm2-get-caps-fixed.$(OBJEXT): example/tpm2-get-caps-fixed.c \
     example/compat.h example/tss2-util.h | example/.deps
-example/tss2-mu-uint32.$(OBJEXT): example/tss2-mu-uint32.c | example/.deps
+test/tss2-mu-uint32.$(OBJEXT): test/tss2-mu-uint32.c | example/.deps
 
 # dependency expression for shared objects built for the UEFI executables
 example/tcg2-get-caps.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
@@ -78,14 +84,14 @@ example/tpm2-get-caps-fixed.so: \
     example/tpm2-get-caps-fixed.o example/tss2-util.o example/compat.o \
     src/libtss2-tcti-uefi.a
 
-example/tss2-mu-uint32.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
-example/tss2-mu-uint32.so: LDFLAGS+=-Wl,--no-undefined
-example/tss2-mu-uint32.so: LDLIBS+=-l:libtss2-mu.a
-example/tss2-mu-uint32.so: example/tss2-mu-uint32.$(OBJEXT)
+test/tss2-mu-uint32.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
+test/tss2-mu-uint32.so: LDFLAGS+=-Wl,--no-undefined
+test/tss2-mu-uint32.so: LDLIBS+=-l:libtss2-mu.a
+test/tss2-mu-uint32.so: test/tss2-mu-uint32.$(OBJEXT)
 
-example/hello-world.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
-example/hello-world.so: LDFLAGS+=-Wl,--no-undefined
-example/hello-world.so: example/hello-world.$(OBJEXT)
+test/hello-world.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
+test/hello-world.so: LDFLAGS+=-Wl,--no-undefined
+test/hello-world.so: test/hello-world.$(OBJEXT)
 
 # rule to extract contributors from git history & generate AUTHORS file
 AUTHORS :
