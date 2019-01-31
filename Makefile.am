@@ -26,7 +26,6 @@ example: \
 
 clean-local:
 	rm -rf $(CLEANS)
-	find tpm2-tss/src -name '*.o' | xargs rm -f
 
 CLEANS = \
     AUTHORS \
