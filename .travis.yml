@@ -4,10 +4,16 @@ dist: xenial
 addons:
   apt:
     packages:
+      - expect
       - libcmocka-dev
       - libcmocka0
       - gnulib
-      - gnu-efi
+      - libglib2.0-dev
+      - libpixman-1-dev
+      - libssl-dev
+      - libtasn1-dev
+      - rpm2cpio
+      - socat
 
 env:
   global:
@@ -34,6 +40,6 @@ before_script:
   - ./bootstrap
 
 script:
-  - $SCANBUILD ./configure --enable-unit
+  - $SCANBUILD ./configure --enable-unit --enable-integration
   - $SCANBUILD $MAKE distcheck
   - $SCANBUILD $MAKE example
