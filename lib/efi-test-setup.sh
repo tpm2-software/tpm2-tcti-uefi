@@ -4,9 +4,6 @@
 set -u
 set +o nounset
 
-# this should be a parameter to the script
-OVMF_IMG=/usr/share/ovmf/OVMF.fd
-
 usage_error ()
 {
     echo "$0: $*" >&2
@@ -17,13 +14,16 @@ print_usage ()
 {
     cat <<END
 Usage:
-    $0 --startup-template=/path/to/template
+    $0 --ovmf=/usr/share/ovmf/OVMF.fd
+       --startup-template=/path/to/template
         TEST-SCRIPT [TEST-SCRIPT-ARGUMENTS]
 END
 }
 while test $# -gt 0; do
     case $1 in
     --help) print_usage; exit $?;;
+    -o|--ovmf) OVMF_FD=$2; shift;;
+    -o=*|--ovmf=*) OVMF_FD="${1#*=}";;
     -s|--startup-template) STARTUP_TEMPLATE=$2; shift;;
     -s=*|--startup-template=*) STARTUP_TEMPLATE="${1#*=}";;
     --) shift; break;;
@@ -38,6 +38,7 @@ TEST_NAME=$(basename $1)
 shift
 TEST_ARGS=$@
 TMP_DIR=$(mktemp --directory /tmp/tpm2-tcti-uefi_${TEST_NAME}.XXXXXXXX)
+OVMF_FD=${OVMF_FD:-/usr/share/ovmf/OVMF.fd}
 
 if [ -z ${STARTUP_TEMPLATE} ]; then
     usage_error "--startup-template is required"
@@ -59,7 +60,7 @@ swtpm socket --tpm2 --tpmstate dir=${TMP_DIR} \
 
 timeout 30s unbuffer qemu-system-x86_64 \
     -nographic \
-    --bios ${OVMF_IMG} \
+    --bios ${OVMF_FD} \
     -drive file=fat:rw:${TMP_DIR} \
     -net none \
     -chardev "socket,id=chrtpm0,path=${TMP_DIR}/tpm-sock" \
