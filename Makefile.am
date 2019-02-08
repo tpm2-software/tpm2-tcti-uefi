@@ -48,6 +48,11 @@ CLEANS = \
     test/tss2-mu-uint32.so
 
 EXTRA_DIST = \
+    lib/efi-test-setup.sh \
+    lib/startup.nsh.template \
+    lib/tss2-sys_config.site \
+    test/hello-world.c \
+    test/tss2-mu-uint32.c \
     AUTHORS \
     CHANGELOG.md \
     CONTRIBUTING.md \
