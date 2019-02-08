@@ -13,13 +13,15 @@ print_usage ()
 {
     cat <<END
 Usage:
-    $0 --prefix=/usr/local --workdir=/path/to/dir
+    $0 --prefix=/usr/local --edk2-target=/path/to/target.txt --workdir=/path/to/dir
 END
 }
 
 while test $# -gt 0; do
     case $1 in
     -h|--help) print_usage; exit $?;;
+    -e|--edk2-target) EDK2_TARGET=$2; shift;;
+    -e=*|--edk2-target=*) EDK2_TARGET="${1#*=}";;
     -p|--prefix) PREFIX=$2; shift;;
     -p=*|--prefix=*) PREFIX="${1#*=}";;
     -t|--tss2-config-site) TSS2_CONFIG_SITE=$2; shift;;
