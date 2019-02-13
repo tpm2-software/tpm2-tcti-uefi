@@ -1,10 +1,12 @@
 language: c
+python: 2.7
 dist: xenial
 
 addons:
   apt:
     packages:
       - expect
+      - iasl
       - libcmocka-dev
       - libcmocka0
       - gnulib
@@ -12,8 +14,9 @@ addons:
       - libpixman-1-dev
       - libssl-dev
       - libtasn1-dev
-      - rpm2cpio
+      - nasm
       - socat
+      - uuid-dev
 
 env:
   global:

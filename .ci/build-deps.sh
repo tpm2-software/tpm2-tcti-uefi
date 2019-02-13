@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 set -e
 
@@ -38,6 +38,7 @@ PREFIX=${PREFIX:-"/usr/local"}
 WORKDIR=${WORKDIR:-"$(mktemp --directory --tmpdir=/tmp tmp.XXXXXXXXXX)"}
 STARTDIR=$(pwd)
 TSS2_CONFIG_SITE=${TSS2_CONFIG_SITE:-"${STARTDIR}/lib/tss2-sys_config.site"}
+EDK2_TARGET=${EDK2_TARGET:-"${STARTDIR}/.ci/target-ovmf-debug-x64-gcc.txt"}
 
 if [ ! -d "${WORKDIR}" ]; then
     mkdir "${WORKDIR}"
@@ -115,18 +116,25 @@ make
 sudo $MAKE PREFIX=${PREFIX} install
 cd -
 
-OVMF_RPM=edk2.git-ovmf-x64-0-20190131.914.g7a90895306.noarch.rpm
-OVMF_RPM_SHA256=582975520720e318c210c6930d046929d35c703e4ec275e37c8e1e89737d345d
-wget "https://www.kraxel.org/repos/jenkins/edk2/${OVMF_RPM}"
-sha256sum "${OVMF_RPM}" | grep -q "${OVMF_RPM_SHA256}"
-if [ ! $? -eq 0 ]; then
-    echo "hash mismatch on OVMF rpm"
+git clone --branch master --single-branch --recursive \
+  https://github.com/tianocore/edk2
+cd edk2
+(
+    CC=gcc
+    PYTHON3_ENABLE=FALSE
+    make --jobs=$(($(nproc)*3/2)) --directory=./BaseTools
+    source ./edksetup.sh
+    cp ${EDK2_TARGET} Conf/target.txt
+    build
+)
+OVMF_FD=$(find . -name 'OVMF.fd')
+if [ ! -f "${OVMF_FD}" ]; then
+    echo "OVMF.fd not found: ${OVMF_FD}"
     exit 1
 fi
-rpm2cpio "${OVMF_RPM}" | cpio -i -d --no-absolute-filenames -v
-OVMF_FD=$(find ./ -name 'OVMF-pure-efi.fd')
 sudo mkdir /usr/share/ovmf
 sudo cp ${OVMF_FD} /usr/share/ovmf/OVMF.fd
+cd -
 
 cd ${STARTDIR}
 rm -rf "${WORKDIR}"
