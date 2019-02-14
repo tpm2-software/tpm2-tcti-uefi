@@ -7,6 +7,7 @@ addons:
     packages:
       - expect
       - iasl
+      - lcov
       - libcmocka-dev
       - libcmocka0
       - gnulib
@@ -29,20 +30,28 @@ env:
 matrix:
   include:
     - compiler: clang
-      env: SCANBUILD="scan-build --status-bugs"
+      env: SCANBUILD="scan-build --status-bugs" MAKE_TARGET=distcheck
     - compiler: gcc
-      env: SCANBUILD=
+      env: SCANBUILD= CONFIG_EXTRA="--enable-code-coverage" MAKE_TARGET=check
 
 after_failure:
   - cat tpm2-tcti-uefi-*/_build/sub/test-suite.log
 
+after_success:
+  - |
+    if [ ! -z "$COVERALLS_REPO_TOKEN" ] && [ "${CC}" = "gcc" ]; then
+      coveralls --build-root=$(pwd) --exclude=./example --exclude=./test \
+        --gcov-options '\-lp'
+    fi
+
 install:
+  - pip install --user cpp-coveralls
   - ./.ci/build-deps.sh --prefix=${PREFIX}
 
 before_script:
   - ./bootstrap
 
 script:
-  - $SCANBUILD ./configure --enable-unit --enable-integration
-  - $SCANBUILD $MAKE distcheck
+  - $SCANBUILD ./configure --enable-unit --enable-integration ${CONFIG_EXTRA}
+  - $SCANBUILD $MAKE $MAKE_TARGET
   - $SCANBUILD $MAKE example
