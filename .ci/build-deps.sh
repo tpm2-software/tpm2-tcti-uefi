@@ -39,7 +39,7 @@ MAKE=${MAKE:-"make --jobs=$(($(nproc)*3/2))"}
 PREFIX=${PREFIX:-"/usr/local"}
 WORKDIR=${WORKDIR:-"$(mktemp --directory --tmpdir=/tmp tmp.XXXXXXXXXX)"}
 STARTDIR=$(pwd)
-TSS2_CONFIG_SITE=${TSS2_CONFIG_SITE:-"${STARTDIR}/lib/tss2-sys_config.site"}
+TSS2_CONFIG_SITE=${TSS2_CONFIG_SITE:-"${STARTDIR}/.ci/tss2-sys_config.site"}
 EDK2_TARGET=${EDK2_TARGET:-"${STARTDIR}/.ci/target-ovmf-debug-x64-gcc.txt"}
 
 if [ ! -d "${WORKDIR}" ]; then
