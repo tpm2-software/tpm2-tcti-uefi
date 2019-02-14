@@ -21,6 +21,12 @@ AM_INIT_AUTOMAKE([foreign subdir-objects])
 AM_PROG_AR([AC_MSG_ERROR([Missing required tool: ar])])
 AC_CONFIG_FILES([Makefile])
 
+AX_CODE_COVERAGE
+m4_ifdef([_AX_CODE_COVERAGE_RULES],
+         [AM_CONDITIONAL(AUTOCONF_CODE_COVERAGE_2019_01_06, [true])],
+         [AM_CONDITIONAL(AUTOCONF_CODE_COVERAGE_2019_01_06, [false])])
+AX_ADD_AM_MACRO_STATIC([])
+
 # required programs (beyond compiler / linker)
 AC_CHECK_TOOL([OBJCOPY], objcopy, [AC_MSG_ERROR([Missing required tool: objcopy])])
 

@@ -26,14 +26,30 @@ check_PROGRAMS = $(TEST_UNIT)
 tss2dir = $(includedir)/tss2
 tss2_HEADERS = src/tss2-tcti-uefi.h
 
+if AUTOCONF_CODE_COVERAGE_2019_01_06
+include $(top_srcdir)/aminclude_static.am
+clean-local: code-coverage-clean
+	rm -rf $(CLEANS)
+distclean-local: code-coverage-dist-clean
+
+# workaround for a bug in Autoconf Archive 2019.01.06
+# (https://github.com/autoconf-archive/autoconf-archive/pull/182)
+if CODE_COVERAGE_ENABLED
+AM_DISTCHECK_CONFIGURE_FLAGS := $(AM_DISTCHECK_CONFIGURE_FLAGS) --disable-code-coverage
+endif # CODE_COVERAGE_ENABLED
+
+else # AUTOCONF_CODE_COVERAGE_2019_01_06
+@CODE_COVERAGE_RULES@
+CODE_COVERAGE_DIRECTORY = $(top_builddir)/src
+clean-local:
+	rm -rf $(CLEANS)
+endif # AUTOCONF_CODE_COVERAGE_2019_01_06
+
 all-local: AUTHORS
 
 example: \
     example/tcg2-get-caps.efi \
     example/tpm2-get-caps-fixed.efi
-
-clean-local:
-	rm -rf $(CLEANS)
 
 CLEANS = \
     AUTHORS \
@@ -61,7 +77,8 @@ EXTRA_DIST = \
     VERSION
 
 # rules to build libraries
-src_libtss2_tcti_uefi_a_CFLAGS = $(EXTRA_CFLAGS) $(AM_CFLAGS)
+src_libtss2_tcti_uefi_a_CFLAGS = $(EXTRA_CFLAGS) $(AM_CFLAGS) \
+    $(CODE_COVERAGE_CFLAGS)
 src_libtss2_tcti_uefi_a_SOURCES = src/tcti-uefi.c src/tcti-uefi.h \
     src/tcg2-protocol.h src/uefi-types.h src/tcg2-util.c src/tcg2-util.h
 
@@ -83,7 +100,7 @@ example/tcg2-get-caps.so: example/tcg2-get-caps.o src/tcg2-util.o
 
 example/tpm2-get-caps-fixed.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
 example/tpm2-get-caps-fixed.so: LDFLAGS+=-Wl,--no-undefined
-example/tpm2-get-caps-fixed.so: LDLIBS+=-l:libtss2-sys.a -l:libtss2-mu.a
+example/tpm2-get-caps-fixed.so: LDLIBS+=-l:libtss2-sys.a -l:libtss2-mu.a $(CODE_COVERAGE_LIBS)
 example/tpm2-get-caps-fixed.so: \
     example/tpm2-get-caps-fixed.o example/tss2-util.o example/compat.o \
     src/libtss2-tcti-uefi.a
@@ -103,8 +120,10 @@ AUTHORS :
 	    uniq -c | sort -nr | sed 's/^\s*//' | cut -d" " -f2- > $@
 
 # variables to simplify test rules
-TEST_FLAGS = $(CMOCKA_CFLAGS) $(EXTRA_CFLAGS) $(AM_CFLAGS)
-TEST_LIBS = $(CMOCKA_LIBS) src/libtss2-tcti-uefi.a test/libtest-util.a
+TEST_FLAGS = $(CMOCKA_CFLAGS) $(EXTRA_CFLAGS) $(AM_CFLAGS) \
+    $(CODE_COVERAGE_CFLAGS)
+TEST_LIBS = $(CMOCKA_LIBS) $(CODE_COVERAGE_LIBS) src/libtss2-tcti-uefi.a \
+    test/libtest-util.a
 TEST_WRAPS = -Wl,--wrap=AllocatePool,--wrap=CopyMem,--wrap=FreePool \
     -Wl,--wrap=Print,--wrap=tcg2_get_capability,--wrap=tcg2_get_max_buf \
     -Wl,--wrap=tcg2_get_protocol,--wrap=tcg2_submit_command

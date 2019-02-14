@@ -19,6 +19,7 @@ AUTHORS
 Makefile
 Makefile.in
 aclocal.m4
+aminclude_static.am
 ar-lib
 autom4te.cache/
 compile
