@@ -19,9 +19,10 @@ The reader is expected to be familiar with this mechanism and should
 consult the GNU documentation for details:
 https://www.gnu.org/software/automake/manual/html_node/config_002esite.html
 
-An example use of the `tss2-sys_config.site` file can be found in
-[.travis-ci.yml](.travis-ci.yml) configuration file. We must build these
-libraries as part of building the example applications in the CI loop.
+An example use of the `tss2-sys_config.site` file can be found in the
+[.ci/build-deps.sh](.ci/build-deps.sh) script. We use this script to build
+required dependencies (including libtss2-sys) for both the CI loop and the
+example Dockerfile.
 
 Once these dependencies have been satisfied the example applications may
 be built by executing the `example` make target:
