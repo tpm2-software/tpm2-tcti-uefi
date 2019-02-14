@@ -9,20 +9,21 @@ suffix in the file name).
 Before the example applications can be built you must build `libtss2-sys`
 and `libtss2-mu` for use in UEFI. The source code for these two libraries
 may be obtained from [tpm2-tss](https://github.com/tpm2-software/tpm2-tss).
-The default flags passed by the tpm2-tss build to the compiler and linker
-will *not* work properly in UEFI. To build these libraries for use in UEFI
-we provide compatible flags in an automake `config.site` file:
+Building these libraries for use in UEFI is beyond the scope of this
+document. For the project CI we do so using the ELF Linux toolchain and a
+custom build environment / CONFIG_SITE file. These files are available in
+the $(srcdir)/.ci directory from git. These files are not shipped in source
+distributions as they are not a supported part of the project.
+
+A good example of building UEFI executables and libraries on Linux is
+here: https://www.rodsbooks.com/efi-programming/index.html
+The CONFIG_SITE file used by our CI loop is here:
 [tss2-sys_config.site](lib/tss2-sys_config.site).
 
 The details of `config.site` files are beyond the scope of this document.
 The reader is expected to be familiar with this mechanism and should
 consult the GNU documentation for details:
 https://www.gnu.org/software/automake/manual/html_node/config_002esite.html
-
-An example use of the `tss2-sys_config.site` file can be found in the
-[.ci/build-deps.sh](.ci/build-deps.sh) script. We use this script to build
-required dependencies (including libtss2-sys) for both the CI loop and the
-example Dockerfile.
 
 Once these dependencies have been satisfied the example applications may
 be built by executing the `example` make target:

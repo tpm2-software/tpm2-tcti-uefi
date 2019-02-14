@@ -24,7 +24,7 @@ env:
     - PREFIX=/usr
     - MAKE="make --jobs=$JOBS"
     - ACLOCAL_DIR="/usr/share/gnulib/m4"
-    - TSS2_CONFIG_SITE=${TRAVIS_BUILD_DIR}/lib/tss2-sys_config.site
+    - TSS2_CONFIG_SITE=${TRAVIS_BUILD_DIR}/.ci/tss2-sys_config.site
 
 matrix:
   include:

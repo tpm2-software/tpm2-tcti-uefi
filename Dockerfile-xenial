@@ -34,7 +34,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /tmp/build-deps
 COPY ./.ci/build-deps.sh ./
 COPY ./.ci/target-ovmf-debug-x64-gcc.txt ./
-COPY ./lib/tss2-sys_config.site ./
+COPY ./.ci/tss2-sys_config.site ./
 RUN bash -x ./build-deps.sh --prefix=${PREFIX} \
     --edk2-target=$(pwd)/target-ovmf-debug-x64-gcc.txt \
     --tss2-config-site=$(pwd)/tss2-sys_config.site
