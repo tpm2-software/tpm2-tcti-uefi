@@ -106,12 +106,13 @@ https://github.com/stefanberger/swtpm/wiki.
 
 Once all dependencies are satisfied we start by creating a `swtpm`
 instance. It should be configured to be a TPM2 device and to expose a
-socket interface for use by QEMU. We provide a referece script that we
-use to automate this process in testing: lib/swtpm2.sh.
+socket interface for use by QEMU. For example use of `swtpm` in the
+automated test harness see
+[lib/efi-test-setup.sh](lib/efi-test-setup.sh).
 
 Once the `swtpm` instance is running we run `qemu` for the `x86_64`
 architecture using the OVMF image installed by the package manager and
 configured to use our `swtpm` instance as the TPM2 device. The details of
 each QEMU command line option used is beyond the scope of this document.
-Instead we provide an example script to start `qemu` in an example
-configuration: lib/qemu-tpm2.sh.
+For example us of `qemu` with `swtpm` see
+[lib/efi-test-setup.sh](lib/efi-test-setup.sh).
