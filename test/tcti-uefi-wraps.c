@@ -85,3 +85,33 @@ __wrap_tcg2_get_protocol (EFI_TCG2_PROTOCOL **tcg2_protocol)
     *tcg2_protocol = mock_ptr_type (VOID*);
     return mock_type (EFI_STATUS);
 }
+
+UINT64
+__wrap_efi_call2 (void *func,
+                  UINT64 arg1,
+                  UINT64 arg2)
+{
+    EFI_TCG2_BOOT_SERVICE_CAPABILITY *tcg2_bs_caps = (EFI_TCG2_BOOT_SERVICE_CAPABILITY*)arg2;
+    tcg2_bs_caps->MaxCommandSize = mock_type (UINT16);
+    tcg2_bs_caps->MaxResponseSize = mock_type (UINT16);
+    return mock_type (UINT64);
+}
+
+UINT64
+__wrap_efi_call5 (void *func,
+                  UINT64 arg1,
+                  UINT64 arg2,
+                  UINT64 arg3,
+                  UINT64 arg4,
+                  UINT64 arg5)
+{
+    return mock_type (UINT64);
+}
+
+EFI_STATUS
+__wrap_LibLocateProtocol (IN  EFI_GUID *ProtocolGuid,
+                          OUT VOID **Interface)
+{
+    *Interface = mock_type (void*);
+    return mock_type (EFI_STATUS);
+}

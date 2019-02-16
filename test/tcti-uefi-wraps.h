@@ -17,6 +17,20 @@ __wrap_FreePool (IN VOID *p);
 UINTN
 __wrap_Print (IN CHAR16 *fmt,
               ...);
+UINT64
+__wrap_efi_call2 (void *func,
+                  UINT64 arg1,
+                  UINT64 arg2);
+UINT64
+__wrap_efi_call5 (void *func,
+                  UINT64 arg1,
+                  UINT64 arg2,
+                  UINT64 arg3,
+                  UINT64 arg4,
+                  UINT64 arg5);
+EFI_STATUS
+__wrap_LibLocateProtocol (IN  EFI_GUID *ProtocolGuid,
+                          OUT VOID **Interface);
 
 /* wrap functions for tcg2-util module */
 EFI_STATUS
