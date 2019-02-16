@@ -63,6 +63,19 @@ tcti_uefi_init_allnull_is_bad_value (void **state)
     assert_int_equal (ret, TSS2_TCTI_RC_BAD_VALUE);
 }
 
+#define TEST_CTX_SIZE MAXBUF_SIZE + sizeof (TSS2_TCTI_UEFI_CONTEXT)
+static void
+tcti_uefi_init_success_test (void **state)
+{
+    size_t tcti_size = TEST_CTX_SIZE;
+    uint8_t buf [TEST_CTX_SIZE] = { 0 };
+    TSS2_TCTI_CONTEXT *ctx = (TSS2_TCTI_CONTEXT*)&buf;
+    TSS2_RC ret;
+
+    ret = Tss2_Tcti_Uefi_Init (ctx, &tcti_size, NULL);
+    assert_int_equal (ret, TSS2_RC_SUCCESS);
+}
+
 int
 main(int argc, char* argv[])
 {
@@ -70,6 +83,7 @@ main(int argc, char* argv[])
         cmocka_unit_test (tcti_uefi_init_size_test),
         cmocka_unit_test (tcti_uefi_init_success_return_value_test),
         cmocka_unit_test (tcti_uefi_init_allnull_is_bad_value),
+        cmocka_unit_test (tcti_uefi_init_success_test),
     };
     return cmocka_run_group_tests (tests, NULL, NULL);
 }
