@@ -11,6 +11,7 @@ EFI_LOG_COMPILER = $(srcdir)/lib/efi-test-setup.sh
 EFI_LOG_FLAGS = --startup-template=$(srcdir)/lib/startup.nsh.template
 if UNIT
 TEST_UNIT = \
+    test/tcg2-util_unit \
     test/tcti-uefi-cast_unit \
     test/tcti-uefi-finalize_unit \
     test/tcti-uefi-init_unit \
@@ -124,9 +125,12 @@ TEST_FLAGS = $(CMOCKA_CFLAGS) $(EXTRA_CFLAGS) $(AM_CFLAGS) \
     $(CODE_COVERAGE_CFLAGS)
 TEST_LIBS = $(CMOCKA_LIBS) $(CODE_COVERAGE_LIBS) src/libtss2-tcti-uefi.a \
     test/libtest-util.a
-TEST_WRAPS = -Wl,--wrap=AllocatePool,--wrap=CopyMem,--wrap=FreePool \
+TEST_WRAPS_TCTI = -Wl,--wrap=AllocatePool,--wrap=CopyMem,--wrap=FreePool \
     -Wl,--wrap=Print,--wrap=tcg2_get_capability,--wrap=tcg2_get_max_buf \
     -Wl,--wrap=tcg2_get_protocol,--wrap=tcg2_submit_command
+TEST_WRAPS_TCG2 = -Wl,--wrap=AllocatePool,--wrap=CopyMem \
+    -Wl,--wrap=FreePool,--wrap=Print,--wrap=efi_call2,--wrap=efi_call5 \
+    -Wl,--wrap=LibLocateProtocol
 
 if UNIT
 # rule to build test utility library
@@ -134,29 +138,34 @@ test_libtest_util_a_CFLAGS = $(EXTRA_CFLAGS) $(AM_CFLAGS)
 test_libtest_util_a_SOURCES = test/tcti-uefi-wraps.c test/tcti-uefi-wraps.h
 
 # rules to build test executables
+test_tcg2_util_unit_CFLAGS = $(TEST_FLAGS) -DGNU_EFI_SETJMP_H
+test_tcg2_util_unit_LDADD = $(TEST_LIBS)
+test_tcg2_util_unit_LDFLAGS = $(TEST_WRAPS_TCG2)
+test_tcg2_util_unit_SOURCES = test/tcg2-util_unit.c
+
 test_tcti_uefi_cast_unit_CFLAGS = $(TEST_FLAGS)
 test_tcti_uefi_cast_unit_LDADD = $(TEST_LIBS)
-test_tcti_uefi_cast_unit_LDFLAGS = $(TEST_WRAPS)
+test_tcti_uefi_cast_unit_LDFLAGS = $(TEST_WRAPS_TCTI)
 test_tcti_uefi_cast_unit_SOURCES = test/tcti-uefi-cast_unit.c
 
 test_tcti_uefi_init_unit_CFLAGS = $(TEST_FLAGS)
 test_tcti_uefi_init_unit_LDADD = $(TEST_LIBS)
-test_tcti_uefi_init_unit_LDFLAGS = $(TEST_WRAPS)
+test_tcti_uefi_init_unit_LDFLAGS = $(TEST_WRAPS_TCTI)
 test_tcti_uefi_init_unit_SOURCES = test/tcti-uefi-init_unit.c
 
 test_tcti_uefi_receive_unit_CFLAGS = $(TEST_FLAGS)
 test_tcti_uefi_receive_unit_LDADD = $(TEST_LIBS)
-test_tcti_uefi_receive_unit_LDFLAGS = $(TEST_WRAPS)
+test_tcti_uefi_receive_unit_LDFLAGS = $(TEST_WRAPS_TCTI)
 test_tcti_uefi_receive_unit_SOURCES = test/tcti-uefi-receive_unit.c
 
 test_tcti_uefi_transmit_unit_CFLAGS = $(TEST_FLAGS)
 test_tcti_uefi_transmit_unit_LDADD = $(TEST_LIBS)
-test_tcti_uefi_transmit_unit_LDFLAGS = $(TEST_WRAPS)
+test_tcti_uefi_transmit_unit_LDFLAGS = $(TEST_WRAPS_TCTI)
 test_tcti_uefi_transmit_unit_SOURCES = test/tcti-uefi-transmit_unit.c
 
 test_tcti_uefi_finalize_unit_CFLAGS = $(TEST_FLAGS)
 test_tcti_uefi_finalize_unit_LDADD = $(TEST_LIBS)
-test_tcti_uefi_finalize_unit_LDFLAGS = $(TEST_WRAPS)
+test_tcti_uefi_finalize_unit_LDFLAGS = $(TEST_WRAPS_TCTI)
 test_tcti_uefi_finalize_unit_SOURCES = test/tcti-uefi-finalize_unit.c
 endif
 
