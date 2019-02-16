@@ -6,8 +6,6 @@
 
 #include "tcg2-protocol.h"
 
-void EFIAPI
-tcg2_caps_prettyprint (EFI_TCG2_BOOT_SERVICE_CAPABILITY *caps);
 EFI_STATUS EFIAPI
 tcg2_get_capability (EFI_TCG2_PROTOCOL *tcg2_protocol,
                      EFI_TCG2_BOOT_SERVICE_CAPABILITY *tcg2_bs_caps);
