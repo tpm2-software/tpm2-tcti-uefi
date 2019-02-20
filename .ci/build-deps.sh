@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+# SPDX-License-Identifier: BSD-2
 set -e
 
 usage_error ()

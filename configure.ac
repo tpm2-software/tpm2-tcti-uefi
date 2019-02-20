@@ -1,4 +1,4 @@
-# SPDK-License-Identifier: BSD-2
+# SPDX-License-Identifier: BSD-2
 AC_INIT([tpm2-tcti-uefi],
         [0.0.0],
         [https://github.com/tpm2-software/tpm2-tcti-uefi/issues],
