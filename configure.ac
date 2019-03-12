@@ -33,24 +33,20 @@ AC_CHECK_TOOL([OBJCOPY], objcopy, [AC_MSG_ERROR([Missing required tool: objcopy]
 # unit test library
 AC_ARG_ENABLE([unit],
               [AS_HELP_STRING([--enable-unit],
-                   [build cmocka unit tests (default is no)])],
-              [enable_unit=$enableval],
-              [enable_unit=no])
-AS_IF([test "x$enable_unit" != xno],
+                   [build cmocka unit tests])])
+AS_IF([test "x$enable_unit" = xyes],
       [PKG_CHECK_MODULES([CMOCKA],
                          [cmocka >= 1.0],
                          [AC_DEFINE([HAVE_CMOCKA],
                                     [1],
                                     [cmocka is available])])])
-AM_CONDITIONAL([UNIT], [test "x$enable_unit" != xno])
+AM_CONDITIONAL([UNIT], [test "x$enable_unit" = xyes])
 
 # integration test
 AC_ARG_ENABLE([integration],
               [AS_HELP_STRING([--enable-integration],
-                  [build and run integration tests (default is no)])],
-              [enable_integration=$enableval],
-              [enable_integration=no])
-AS_IF([test "x$enable_integration" != xno],
+                  [build and run integration tests])])
+AS_IF([test "x$enable_integration" = xyes],
       [AC_CHECK_PROG([SWTPM],
                      swtpm,
                      [yes],
@@ -64,7 +60,7 @@ AS_IF([test "x$enable_integration" != xno],
                                    [Path to OVMF.fd]),
                    [AC_SUBST([OVMF_PATH],[$withval])],
                    [AC_SUBST([OVMF_PATH],[/usr/share/ovmf/OVMF.fd])])])
-AM_CONDITIONAL([INTEGRATION], [test "x$enable_integration" != xno])
+AM_CONDITIONAL([INTEGRATION], [test "x$enable_integration" = xyes])
 
 # directory where gnu-efi headers live
 AC_ARG_WITH([efi-includedir],
