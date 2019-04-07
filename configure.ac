@@ -36,10 +36,7 @@ AC_ARG_ENABLE([unit],
                    [build cmocka unit tests])])
 AS_IF([test "x$enable_unit" = xyes],
       [PKG_CHECK_MODULES([CMOCKA],
-                         [cmocka >= 1.0],
-                         [AC_DEFINE([HAVE_CMOCKA],
-                                    [1],
-                                    [cmocka is available])])])
+                         [cmocka >= 1.0])])
 AM_CONDITIONAL([UNIT], [test "x$enable_unit" = xyes])
 
 # integration test
