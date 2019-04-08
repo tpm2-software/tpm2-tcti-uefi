@@ -50,12 +50,15 @@ all-local: AUTHORS
 
 example: \
     example/tcg2-get-caps.efi \
+    example/tcg2-get-eventlog.efi \
     example/tpm2-get-caps-fixed.efi
 
 CLEANS = \
     AUTHORS \
     example/tcg2-get-caps.efi \
     example/tcg2-get-caps.so \
+    example/tcg2-get-eventlog.efi \
+    example/tcg2-get-eventlog.so \
     example/tpm2-get-caps-fixed.efi \
     example/tpm2-get-caps-fixed.so \
     example/*.$(OBJEXT) \
@@ -90,6 +93,8 @@ example/.deps:
 test/hello-world.$(OBJEXT): test/hello-world.c | example/.deps
 example/tcg2-get-caps.$(OBJEXT): example/tcg2-get-caps.c \
     src/tcg2-protocol.h src/tcg2-util.h | example/.deps
+example/tcg2-get-eventlog.$(OBJEXT): example/tcg2-get-eventlog.c \
+    |example/.deps
 example/tpm2-get-caps-fixed.$(OBJEXT): example/tpm2-get-caps-fixed.c \
     example/compat.h example/tss2-util.h | example/.deps
 test/tss2-mu-uint32.$(OBJEXT): test/tss2-mu-uint32.c | example/.deps
@@ -98,6 +103,10 @@ test/tss2-mu-uint32.$(OBJEXT): test/tss2-mu-uint32.c | example/.deps
 example/tcg2-get-caps.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
 example/tcg2-get-caps.so: LDFLAGS+=-Wl,--no-undefined
 example/tcg2-get-caps.so: example/tcg2-get-caps.o src/tcg2-util.o
+
+example/tcg2-get-eventlog.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
+example/tcg2-get-eventlog.so: LDFLAGS+=-Wl,--no-undefined
+example/tcg2-get-eventlog.so: example/tcg2-get-eventlog.o src/tcg2-util.o
 
 example/tpm2-get-caps-fixed.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
 example/tpm2-get-caps-fixed.so: LDFLAGS+=-Wl,--no-undefined

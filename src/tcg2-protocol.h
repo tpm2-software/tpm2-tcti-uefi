@@ -17,6 +17,7 @@
 
 typedef UINT32 TCG_PCRINDEX;
 typedef UINT32 TCG_EVENTTYPE;
+typedef UINT8 TCG_DIGEST [20];
 
 typedef UINT32 EFI_TCG2_EVENT_LOG_BITMAP;
 typedef UINT32 EFI_TCG2_EVENT_LOG_FORMAT;
@@ -38,6 +39,46 @@ typedef UINT32 EFI_TCG2_EVENT_ALGORITHM_BITMAP;
 #define EFI_TCG2_BOOT_HASH_ALG_SHA512  0x00000008
 #define EFI_TCG2_BOOT_HASH_ALG_SM3_256 0x00000010
 
+/*
+ * Log event types. These are spread out over 2 specs:
+ * "TCG EFI Protocol Specification For TPM Family 1.1 or 1.2" and
+ * "TCG PC Client Specific Implementation Specification for Conventional BIOS"
+ */
+#define EV_PREBOOT_CERT            0x0
+#define EV_POST_CODE               0x1
+#define EV_UNUSED                  0x2
+#define EV_NO_ACTION               0x3
+#define EV_SEPARATOR               0x4
+#define EV_ACTION                  0x5
+#define EV_EVENT_TAG               0x6
+#define EV_S_CRTM_CONTENTS         0x7
+#define EV_S_CRTM_VERSION          0x8
+#define EV_CPU_MICROCODE           0x9
+#define EV_PLATFORM_CONFIG_FLAGS   0xa
+#define EV_TABLE_OF_DEVICES        0xb
+#define EV_COMPACT_HASH            0xc
+#define EV_IPL                     0xd
+#define EV_IPL_PARTITION_DATA      0xe
+#define EV_NONHOST_CODE            0xf
+#define EV_NONHOST_CONFIG          0x10
+#define EV_NONHOST_INFO            0x11
+#define EV_OMIT_BOOT_DEVICE_EVENTS 0x12
+
+/*
+ * TCG EFI Platform Specification For TPM Family 1.1 or 1.2
+ */
+#define EV_EFI_EVENT_BASE                0x80000000
+#define EV_EFI_VARIABLE_DRIVER_CONFIG    EV_EFI_EVENT_BASE + 0x1
+#define EV_EFI_VARIABLE_BOOT             EV_EFI_EVENT_BASE + 0x2
+#define EV_EFI_BOOT_SERVICES_APPLICATION EV_EFI_EVENT_BASE + 0x3
+#define EV_EFI_BOOT_SERVICES_DRIVER      EV_EFI_EVENT_BASE + 0x4
+#define EV_EFI_RUNTIME_SERVICES_DRIVER   EV_EFI_EVENT_BASE + 0x5
+#define EV_EFI_GPT_EVENT                 EV_EFI_EVENT_BASE + 0x6
+#define EV_EFI_ACTION                    EV_EFI_EVENT_BASE + 0x7
+#define EV_EFI_PLATFORM_FIRMWARE_BLOB    EV_EFI_EVENT_BASE + 0x8
+#define EV_EFI_HANDOFF_TABLES            EV_EFI_EVENT_BASE + 0x9
+#define EV_EFI_VARIABLE_AUTHORITY        EV_EFI_EVENT_BASE + 0xe0
+
 #ifndef PACKED
 #define PACKED __attribute__((__packed__))
 #endif
@@ -45,6 +86,14 @@ typedef UINT32 EFI_TCG2_EVENT_ALGORITHM_BITMAP;
 typedef struct tdEFI_TCG2_PROTOCOL EFI_TCG2_PROTOCOL;
 
 /* structures */
+typedef struct {
+  TCG_PCRINDEX  PCRIndex;
+  TCG_EVENTTYPE EventType;
+  TCG_DIGEST    digest;
+  UINT32        EventSize;
+  UINT8         Event[1];
+} PACKED TCG_PCR_EVENT;
+
 typedef struct tdEFI_TCG2_EVENT_HEADER {
   UINT32        HeaderSize;
   UINT16        HeaderVersion;

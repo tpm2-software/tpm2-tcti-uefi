@@ -7,6 +7,12 @@
 #include "tcg2-protocol.h"
 
 EFI_STATUS EFIAPI
+tcg2_get_eventlog (EFI_TCG2_PROTOCOL *tpm2_prot,
+                   EFI_TCG2_EVENT_LOG_FORMAT format,
+                   EFI_PHYSICAL_ADDRESS *first,
+                   EFI_PHYSICAL_ADDRESS *last,
+                   BOOLEAN *truncated);
+EFI_STATUS EFIAPI
 tcg2_get_capability (EFI_TCG2_PROTOCOL *tcg2_protocol,
                      EFI_TCG2_BOOT_SERVICE_CAPABILITY *tcg2_bs_caps);
 void EFIAPI
