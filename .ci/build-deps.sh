@@ -82,7 +82,7 @@ CC=gcc
 git clone --branch master --single-branch \
   https://github.com/stefanberger/swtpm
 cd swtpm
-./autogen.sh --prefix=${PREFIX}
+./autogen.sh --prefix=${PREFIX} --without-seccomp
 $MAKE
 sudo $MAKE install
 cd -
