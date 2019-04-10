@@ -4,8 +4,10 @@
 AM_CFLAGS = -I$(srcdir)/src
 
 TESTS = $(TEST_UNIT) $(TEST_INTEGRATION)
-lib_LIBRARIES = src/libtss2-tcti-uefi.a
-noinst_LIBRARIES = test/libtest-util.a
+libtss2_tcti_uefi = src/libtss2-tcti-uefi.a
+lib_LIBRARIES = $(libtss2_tcti_uefi)
+libexample_util = example/libexample-util.a
+noinst_LIBRARIES = $(libexample_util) test/libtest-util.a
 TEST_EXTENSIONS = .efi
 EFI_LOG_COMPILER = $(srcdir)/lib/efi-test-setup.sh
 EFI_LOG_FLAGS = --startup-template=$(srcdir)/lib/startup.nsh.template
@@ -86,6 +88,11 @@ src_libtss2_tcti_uefi_a_CFLAGS = $(EXTRA_CFLAGS) $(AM_CFLAGS) \
 src_libtss2_tcti_uefi_a_SOURCES = src/tcti-uefi.c src/tcti-uefi.h \
     src/tcg2-protocol.h src/uefi-types.h src/tcg2-util.c src/tcg2-util.h
 
+example_libexample_util_a_CFLAGS = $(EXTRA_CFLAGS) $(AM_CFLAGS) \
+    $(CODE_COVERAGE_CFLAGS)
+example_libexample_util_a_SOURCES = example/compat.c example/compat.h \
+    example/tss2-util.c example/tss2-util.h example/util.c example/util.h
+
 # hack to ensure .deps directory required by autotools is created in the
 # 'example' directory before we build any targets
 example/.deps:
@@ -102,7 +109,9 @@ test/tss2-mu-uint32.$(OBJEXT): test/tss2-mu-uint32.c | example/.deps
 # dependency expression for shared objects built for the UEFI executables
 example/tcg2-get-caps.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
 example/tcg2-get-caps.so: LDFLAGS+=-Wl,--no-undefined
-example/tcg2-get-caps.so: example/tcg2-get-caps.o src/tcg2-util.o
+example/tcg2-get-caps.so: LDLIBS+=$(libtss2_tcti_uefi) $(libexample_util) \
+    $(CODE_COVERAGE_LIBS)
+example/tcg2-get-caps.so: example/tcg2-get-caps.o
 
 example/tcg2-get-eventlog.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
 example/tcg2-get-eventlog.so: LDFLAGS+=-Wl,--no-undefined
@@ -111,9 +120,8 @@ example/tcg2-get-eventlog.so: example/tcg2-get-eventlog.o src/tcg2-util.o
 example/tpm2-get-caps-fixed.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
 example/tpm2-get-caps-fixed.so: LDFLAGS+=-Wl,--no-undefined
 example/tpm2-get-caps-fixed.so: LDLIBS+=-l:libtss2-sys.a -l:libtss2-mu.a $(CODE_COVERAGE_LIBS)
-example/tpm2-get-caps-fixed.so: \
-    example/tpm2-get-caps-fixed.o example/tss2-util.o example/compat.o \
-    src/libtss2-tcti-uefi.a
+example/tpm2-get-caps-fixed.so: example/tpm2-get-caps-fixed.o \
+    $(libexample_util) $(libtss2_tcti_uefi)
 
 test/tss2-mu-uint32.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
 test/tss2-mu-uint32.so: LDFLAGS+=-Wl,--no-undefined
