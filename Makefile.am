@@ -53,7 +53,8 @@ all-local: AUTHORS
 example: \
     example/tcg2-get-caps.efi \
     example/tcg2-get-eventlog.efi \
-    example/tpm2-get-caps-fixed.efi
+    example/tpm2-get-caps-fixed.efi \
+    example/tcg2-get-pcr-banks.efi
 
 CLEANS = \
     AUTHORS \
@@ -63,6 +64,8 @@ CLEANS = \
     example/tcg2-get-eventlog.so \
     example/tpm2-get-caps-fixed.efi \
     example/tpm2-get-caps-fixed.so \
+    example/tcg2-get-pcr-banks.efi \
+    example/tcg2-get-pcr-banks.so \
     example/*.$(OBJEXT) \
     test/hello-world.efi \
     test/hello-world.so \
@@ -104,6 +107,8 @@ example/tcg2-get-eventlog.$(OBJEXT): example/tcg2-get-eventlog.c \
     |example/.deps
 example/tpm2-get-caps-fixed.$(OBJEXT): example/tpm2-get-caps-fixed.c \
     example/compat.h example/tss2-util.h | example/.deps
+example/tcg2-get-pcr-banks.$(OBJEXT): example/tcg2-get-pcr-banks.c \
+    example/compat.h example/tss2-util.h | example/.deps
 test/tss2-mu-uint32.$(OBJEXT): test/tss2-mu-uint32.c | example/.deps
 
 # dependency expression for shared objects built for the UEFI executables
@@ -121,6 +126,12 @@ example/tpm2-get-caps-fixed.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
 example/tpm2-get-caps-fixed.so: LDFLAGS+=-Wl,--no-undefined
 example/tpm2-get-caps-fixed.so: LDLIBS+=-l:libtss2-sys.a -l:libtss2-mu.a $(CODE_COVERAGE_LIBS)
 example/tpm2-get-caps-fixed.so: example/tpm2-get-caps-fixed.o \
+    $(libexample_util) $(libtss2_tcti_uefi)
+
+example/tcg2-get-pcr-banks.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
+example/tcg2-get-pcr-banks.so: LDFLAGS+=-Wl,--no-undefined
+example/tcg2-get-pcr-banks.so: LDLIBS+=-l:libtss2-sys.a -l:libtss2-mu.a $(CODE_COVERAGE_LIBS)
+example/tcg2-get-pcr-banks.so: example/tcg2-get-pcr-banks.o \
     $(libexample_util) $(libtss2_tcti_uefi)
 
 test/tss2-mu-uint32.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)

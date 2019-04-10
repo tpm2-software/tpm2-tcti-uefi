@@ -13,6 +13,9 @@ tcg2_get_eventlog (EFI_TCG2_PROTOCOL *tpm2_prot,
                    EFI_PHYSICAL_ADDRESS *last,
                    BOOLEAN *truncated);
 EFI_STATUS EFIAPI
+tcg2_get_active_pcr_banks (EFI_TCG2_PROTOCOL *tcg2_protocol,
+                           UINT32 *pcr_banks);
+EFI_STATUS EFIAPI
 tcg2_get_capability (EFI_TCG2_PROTOCOL *tcg2_protocol,
                      EFI_TCG2_BOOT_SERVICE_CAPABILITY *tcg2_bs_caps);
 void EFIAPI
