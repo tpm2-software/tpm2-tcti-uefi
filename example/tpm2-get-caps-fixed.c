@@ -20,40 +20,21 @@
  * There are a number of fixed TPM properties (tagged properties) that are
  * characters (8bit chars) packed into 32bit integers, trim leading and trailing spaces
  */
-static char *
-get_uint32_as_chars (UINT32    value)
+static wchar_t*
+get_uint32_as_wchars (UINT32    value)
 {
-    static char buf[5];
+    static wchar_t buf[5] = { 0, };
+    char *bytes;
+    size_t i;
 
     value = be32toh (value);
-    UINT8 *bytes = (UINT8 *)&value;
+    bytes = (char*)&value;
 
-    /*
-     * move the start of the string to the beginning
-     * first non space character
-     * Record the number of skips in i.
-     */
-    unsigned i;
-    for(i=0; i < sizeof(value); i++) {
-        UINT8 b = *bytes;
-        if (!isspace(b)) {
-            break;
-        }
-        bytes++;
+    /* aproximately mbstowcs(3) */
+    for (i = 0; i < sizeof (value); ++i) {
+        buf [i] = bytes [i];
     }
 
-    /* record the number of trailing spaces in j */
-    unsigned j;
-    for(j=sizeof(value) - i; j > i; j--) {
-        UINT8 b = bytes[j - 1];
-        /* NULL bytes count as space */
-        if (b && !isspace(b)) {
-            break;
-        }
-    }
-
-    memcpy(buf, bytes, j);
-    buf[j] = '\0';
     return buf;
 }
 /*
@@ -76,19 +57,17 @@ dump_tpm_properties_fixed (TPMS_TAGGED_PROPERTY properties[],
                            size_t               count)
 {
     size_t i;
-    char *buf;
 
     for (i = 0; i < count; ++i) {
         TPM2_PT property = properties[i].property;
         UINT32 value    = properties[i].value;
         switch (property) {
         case TPM2_PT_FAMILY_INDICATOR:
-            buf = get_uint32_as_chars (value);
             Print (L"TPM2_PT_FAMILY_INDICATOR:\n"
                     "  raw: 0x08%x\n"
                     "  value: \"%s\"\n",
                     value,
-                    buf);
+                    get_uint32_as_wchars (value));
             break;
         case TPM2_PT_LEVEL:
             Print (L"TPM2_PT_LEVEL:\n"
@@ -108,39 +87,38 @@ dump_tpm_properties_fixed (TPMS_TAGGED_PROPERTY properties[],
             break;
         case TPM2_PT_MANUFACTURER:
             Print (L"TPM2_PT_MANUFACTURER:\n"
-                    " value        0x%X\n", value);
+                    "  raw: 0x%X\n"
+                    "  value: \"%s\"\n",
+                    value,
+                    get_uint32_as_wchars (value));
             break;
         case TPM2_PT_VENDOR_STRING_1:
-            buf = get_uint32_as_chars (value);
             Print (L"TPM2_PT_VENDOR_STRING_1:\n"
                     "  raw: 0x%X\n"
                     "  value: \"%s\"\n",
                     value,
-                    buf);
+                    get_uint32_as_wchars (value));
             break;
         case TPM2_PT_VENDOR_STRING_2:
-            buf = get_uint32_as_chars (value);
             Print (L"TPM2_PT_VENDOR_STRING_2:\n"
                     "  raw: 0x%X\n"
                     "  value: \"%s\"\n",
                     value,
-                    buf);
+                    get_uint32_as_wchars (value));
             break;
         case TPM2_PT_VENDOR_STRING_3:
-            buf = get_uint32_as_chars (value);
             Print (L"TPM2_PT_VENDOR_STRING_3:\n"
                     "  raw: 0x%X\n"
                     "  value: \"%s\"\n",
                     value,
-                    buf);
+                    get_uint32_as_wchars (value));
             break;
         case TPM2_PT_VENDOR_STRING_4:
-            buf = get_uint32_as_chars (value);
             Print (L"TPM2_PT_VENDOR_STRING_4:\n"
                     "  raw: 0x%X\n"
                     "  value: \"%s\"\n",
                     value,
-                    buf);
+                    get_uint32_as_wchars (value));
             break;
         case TPM2_PT_VENDOR_TPM_TYPE:
             Print (L"TPM2_PT_VENDOR_TPM_TYPE:\n"
