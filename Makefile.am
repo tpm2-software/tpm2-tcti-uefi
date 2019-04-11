@@ -114,25 +114,29 @@ test/tss2-mu-uint32.$(OBJEXT): test/tss2-mu-uint32.c | example/.deps
 # dependency expression for shared objects built for the UEFI executables
 example/tcg2-get-caps.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
 example/tcg2-get-caps.so: LDFLAGS+=-Wl,--no-undefined
-example/tcg2-get-caps.so: LDLIBS+=$(libtss2_tcti_uefi) $(libexample_util) \
-    $(CODE_COVERAGE_LIBS)
-example/tcg2-get-caps.so: example/tcg2-get-caps.o
+example/tcg2-get-caps.so: LDLIBS+=$(CODE_COVERAGE_LIBS)
+example/tcg2-get-caps.so: $(libtss2_tcti_uefi) $(libexample_util)
+example/tcg2-get-caps.so: example/tcg2-get-caps.$(OBJEXT)
 
 example/tcg2-get-eventlog.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
 example/tcg2-get-eventlog.so: LDFLAGS+=-Wl,--no-undefined
-example/tcg2-get-eventlog.so: example/tcg2-get-eventlog.o src/tcg2-util.o
+example/tcg2-get-eventlog.so: LDLIBS+=$(CODE_COVERAGE_LIBS)
+example/tcg2-get-eventlog.so: $(libtss2_tcti_uefi)
+example/tcg2-get-eventlog.so: example/tcg2-get-eventlog.$(OBJEXT)
 
 example/tpm2-get-caps-fixed.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
 example/tpm2-get-caps-fixed.so: LDFLAGS+=-Wl,--no-undefined
-example/tpm2-get-caps-fixed.so: LDLIBS+=-l:libtss2-sys.a -l:libtss2-mu.a $(CODE_COVERAGE_LIBS)
-example/tpm2-get-caps-fixed.so: example/tpm2-get-caps-fixed.o \
-    $(libexample_util) $(libtss2_tcti_uefi)
+example/tpm2-get-caps-fixed.so: LDLIBS+=-l:libtss2-sys.a -l:libtss2-mu.a \
+    $(CODE_COVERAGE_LIBS)
+example/tpm2-get-caps-fixed.so: $(libexample_util) $(libtss2_tcti_uefi)
+example/tpm2-get-caps-fixed.so: example/tpm2-get-caps-fixed.$(OBJEXT)
 
 example/tcg2-get-pcr-banks.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
 example/tcg2-get-pcr-banks.so: LDFLAGS+=-Wl,--no-undefined
-example/tcg2-get-pcr-banks.so: LDLIBS+=-l:libtss2-sys.a -l:libtss2-mu.a $(CODE_COVERAGE_LIBS)
-example/tcg2-get-pcr-banks.so: example/tcg2-get-pcr-banks.o \
-    $(libexample_util) $(libtss2_tcti_uefi)
+example/tcg2-get-pcr-banks.so: LDLIBS+=-l:libtss2-sys.a -l:libtss2-mu.a \
+    $(CODE_COVERAGE_LIBS)
+example/tcg2-get-pcr-banks.so: $(libexample_util) $(libtss2_tcti_uefi)
+example/tcg2-get-pcr-banks.so: example/tcg2-get-pcr-banks.$(OBJEXT)
 
 test/tss2-mu-uint32.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
 test/tss2-mu-uint32.so: LDFLAGS+=-Wl,--no-undefined
