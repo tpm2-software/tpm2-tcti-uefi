@@ -1,6 +1,9 @@
 /* SPDX-License-Identifier: BSD-2 */
 #include <efi/efi.h>
 #include <efi/efilib.h>
+#include <stdlib.h>
+
+#include <tss2/tss2_tpm2_types.h>
 
 #include "tcg2-protocol.h"
 #include "tcg2-util.h"
@@ -97,4 +100,75 @@ eventtype_to_string (TCG_EVENTTYPE event_type)
     default:
         return L"Unknown event type";
     }
+}
+size_t
+get_alg_size (UINT16 alg_id)
+{
+    switch (alg_id) {
+    case TPM2_ALG_SHA1:
+        return TPM2_SHA1_DIGEST_SIZE;
+    case TPM2_ALG_SHA256:
+        return TPM2_SHA256_DIGEST_SIZE;
+    case TPM2_ALG_SHA384:
+        return TPM2_SHA384_DIGEST_SIZE;
+    case TPM2_ALG_SHA512:
+        return TPM2_SHA512_DIGEST_SIZE;
+    case TPM2_ALG_SM3_256:
+        return TPM2_SM3_256_DIGEST_SIZE;
+    default:
+        return 0;
+    }
+}
+wchar_t* EFIAPI
+get_alg_name (UINT16 alg_id)
+{
+    switch (alg_id) {
+    case TPM2_ALG_SHA1:
+        return L"EFI_TCG2_BOOT_HASH_ALG_SHA1";
+    case TPM2_ALG_SHA256:
+        return L"EFI_TCG2_BOOT_HASH_ALG_SHA256";
+    case TPM2_ALG_SHA384:
+        return L"EFI_TCG2_BOOT_HASH_ALG_SHA384";
+    case TPM2_ALG_SHA512:
+        return L"EFI_TCG2_BOOT_HASH_ALG_SHA512";
+    case TPM2_ALG_SM3_256:
+        return L"EFI_TCG2_BOOT_HASH_ALG_SM3_256";
+    default:
+        return L"UNKNOWN_ALGORITHM";
+    }
+}
+/*
+ * "high" in this context means the supported event log format with the
+ * highest version number
+ * In the exceptional (your firmware is broken) case that the UEFI TCG2
+ * protocol driver supports only a format that we don't understand this
+ * function will still return EFI_SUCCESS, but the 'format' parameter
+ * will be set to 0.
+ */
+EFI_STATUS EFIAPI
+get_eventlog_format_high (EFI_TCG2_PROTOCOL *tcg2_protocol,
+                          EFI_TCG2_EVENT_LOG_FORMAT *format)
+{
+    EFI_STATUS status;
+    EFI_TCG2_BOOT_SERVICE_CAPABILITY caps = {
+        .Size = sizeof (EFI_TCG2_BOOT_SERVICE_CAPABILITY),
+    };
+
+    status = tcg2_get_capability (tcg2_protocol, &caps);
+    if (EFI_ERROR (status))
+        return status;
+
+    if (caps.SupportedEventLogs && EFI_TCG2_EVENT_LOG_FORMAT_TCG_2)
+        *format = EFI_TCG2_EVENT_LOG_FORMAT_TCG_2;
+    else if (caps.SupportedEventLogs && EFI_TCG2_EVENT_LOG_FORMAT_TCG_1_2)
+        *format = EFI_TCG2_EVENT_LOG_FORMAT_TCG_1_2;
+    else {
+        *format = 0;
+    }
+    return EFI_SUCCESS;
+}
+TCG_DIGEST2* EFIAPI
+get_next_digest (TCG_DIGEST2* digest)
+{
+    return (TCG_DIGEST2*)(digest->Digest + get_alg_size (digest->AlgorithmId));
 }

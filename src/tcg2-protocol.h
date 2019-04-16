@@ -94,6 +94,24 @@ typedef struct {
   UINT8         Event[1];
 } PACKED TCG_PCR_EVENT;
 
+typedef struct {
+  UINT16 AlgorithmId;
+  UINT8 Digest[];
+} PACKED TCG_DIGEST2;
+
+typedef struct {
+  UINT32 EventSize;
+  UINT8 Event [];
+} PACKED TCG_EVENT2;
+
+typedef struct {
+  TCG_PCRINDEX PCRIndex;
+  TCG_EVENTTYPE EventType;
+  UINT32 DigestCount;
+  TCG_DIGEST Digests[];
+ /* TCG_EVENT2 comes next */
+} PACKED TCG_EVENT_HEADER2;
+
 typedef struct tdEFI_TCG2_EVENT_HEADER {
   UINT32        HeaderSize;
   UINT16        HeaderVersion;
