@@ -121,7 +121,7 @@ example/tcg2-get-caps.so: example/tcg2-get-caps.$(OBJEXT)
 example/tcg2-get-eventlog.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
 example/tcg2-get-eventlog.so: LDFLAGS+=-Wl,--no-undefined
 example/tcg2-get-eventlog.so: LDLIBS+=$(CODE_COVERAGE_LIBS)
-example/tcg2-get-eventlog.so: $(libtss2_tcti_uefi)
+example/tcg2-get-eventlog.so: $(libtss2_tcti_uefi) $(libexample_util)
 example/tcg2-get-eventlog.so: example/tcg2-get-eventlog.$(OBJEXT)
 
 example/tpm2-get-caps-fixed.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
