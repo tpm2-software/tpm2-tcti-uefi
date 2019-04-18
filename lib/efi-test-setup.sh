@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: BSD-2
 
 set -u
-set +o nounset
 
 usage_error ()
 {
