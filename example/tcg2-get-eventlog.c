@@ -19,8 +19,8 @@ prettyprint_tpm12_event (TCG_PCR_EVENT *event)
     Print (L"  EventType: %s (0x%08" PRIx32 ")\n",
            eventtype_to_string (event->EventType),
            event->EventType);
-    Print (L"  digest: \n");
-    DumpHex (4, 0, sizeof (event->digest), &event->digest);
+    Print (L"  Digest: \n");
+    DumpHex (4, 0, sizeof (event->Digest), &event->Digest);
     Print (L"  EventSize: %d\n", event->EventSize);
     Print (L"  Event: \n");
     DumpHex (4, 0, event->EventSize, event->Event);
