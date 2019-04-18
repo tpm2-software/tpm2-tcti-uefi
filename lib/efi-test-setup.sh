@@ -72,6 +72,6 @@ cat ${TMP_DIR}/${TEST_NAME}_swtpm.log
 cat ${TMP_DIR}/${TEST_NAME}_qemu.log
 
 if [ $ret -eq 0 ]; then
-    rm -rf ${TPM_DIR}
+    rm -rf ${TMP_DIR}
 fi
 exit $ret
