@@ -68,6 +68,10 @@ qemu-system-x86_64 \
     -device 'tpm-tis,tpmdev=tpm0' | tee ${TMP_DIR}/${TEST_NAME}_qemu.log \
     | grep 'Reset with Success'
 ret=$?
+
+cat ${TMP_DIR}/${TEST_NAME}_swtpm.log
+cat ${TMP_DIR}/${TEST_NAME}_qemu.log
+
 if [ $ret -eq 0 ]; then
     rm -rf ${TPM_DIR}
 fi
