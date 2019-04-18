@@ -89,7 +89,7 @@ typedef struct tdEFI_TCG2_PROTOCOL EFI_TCG2_PROTOCOL;
 typedef struct {
   TCG_PCRINDEX  PCRIndex;
   TCG_EVENTTYPE EventType;
-  TCG_DIGEST    digest;
+  TCG_DIGEST    Digest;
   UINT32        EventSize;
   UINT8         Event[1];
 } PACKED TCG_PCR_EVENT;
