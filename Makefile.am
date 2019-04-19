@@ -13,6 +13,7 @@ EFI_LOG_COMPILER = $(srcdir)/lib/efi-test-setup.sh
 EFI_LOG_FLAGS = --startup-template=$(srcdir)/lib/startup.nsh.template
 if UNIT
 TEST_UNIT = \
+    test/example-util_unit \
     test/tcg2-util_unit \
     test/tcti-uefi-cast_unit \
     test/tcti-uefi-finalize_unit \
@@ -54,6 +55,7 @@ example: \
     example/tcg2-get-caps.efi \
     example/tcg2-get-eventlog.efi \
     example/tpm2-get-caps-fixed.efi \
+    example/tpm2-get-pcrs.efi \
     example/tcg2-get-pcr-banks.efi
 
 CLEANS = \
@@ -64,6 +66,8 @@ CLEANS = \
     example/tcg2-get-eventlog.so \
     example/tpm2-get-caps-fixed.efi \
     example/tpm2-get-caps-fixed.so \
+    example/tpm2-get-pcrs.efi \
+    example/tpm2-get-pcrs.so \
     example/tcg2-get-pcr-banks.efi \
     example/tcg2-get-pcr-banks.so \
     example/*.$(OBJEXT) \
@@ -107,6 +111,8 @@ example/tcg2-get-eventlog.$(OBJEXT): example/tcg2-get-eventlog.c \
     |example/.deps
 example/tpm2-get-caps-fixed.$(OBJEXT): example/tpm2-get-caps-fixed.c \
     example/compat.h example/tss2-util.h | example/.deps
+example/tpm2-get-pcrs.$(OBJEXT): example/tpm2-get-pcrs.c \
+    example/tss2-util.h | example/.deps
 example/tcg2-get-pcr-banks.$(OBJEXT): example/tcg2-get-pcr-banks.c \
     example/compat.h example/tss2-util.h | example/.deps
 test/tss2-mu-uint32.$(OBJEXT): test/tss2-mu-uint32.c | example/.deps
@@ -130,6 +136,13 @@ example/tpm2-get-caps-fixed.so: LDLIBS+=-l:libtss2-sys.a -l:libtss2-mu.a \
     $(CODE_COVERAGE_LIBS)
 example/tpm2-get-caps-fixed.so: $(libexample_util) $(libtss2_tcti_uefi)
 example/tpm2-get-caps-fixed.so: example/tpm2-get-caps-fixed.$(OBJEXT)
+
+example/tpm2-get-pcrs.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
+example/tpm2-get-pcrs.so: LDFLAGS+=-Wl,--no-undefined
+example/tpm2-get-pcrs.so: LDLIBS+=-l:libtss2-sys.a -l:libtss2-mu.a \
+    $(CODE_COVERAGE_LIBS)
+example/tpm2-get-pcrs.so: $(libexample_util) $(libtss2_tcti_uefi)
+example/tpm2-get-pcrs.so: example/tpm2-get-pcrs.$(OBJEXT)
 
 example/tcg2-get-pcr-banks.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
 example/tcg2-get-pcr-banks.so: LDFLAGS+=-Wl,--no-undefined
@@ -170,6 +183,11 @@ test_libtest_util_a_CFLAGS = $(EXTRA_CFLAGS) $(AM_CFLAGS)
 test_libtest_util_a_SOURCES = test/tcti-uefi-wraps.c test/tcti-uefi-wraps.h
 
 # rules to build test executables
+test_example_util_unit_CFLAGS = $(TEST_FLAGS) -DGNU_EFI_SETJMP_H
+test_example_util_unit_LDADD = $(libexample_util) $(TEST_LIBS)
+test_example_util_unit_LDFLAGS = $(TEST_WRAPS_TCTI)
+test_example_util_unit_SOURCES = test/example-util_unit.c
+
 test_tcg2_util_unit_CFLAGS = $(TEST_FLAGS) -DGNU_EFI_SETJMP_H
 test_tcg2_util_unit_LDADD = $(TEST_LIBS)
 test_tcg2_util_unit_LDFLAGS = $(TEST_WRAPS_TCG2)

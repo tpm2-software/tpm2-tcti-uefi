@@ -2,11 +2,13 @@
 #include <efi/efi.h>
 #include <efi/efilib.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <tss2/tss2_tpm2_types.h>
 
 #include "tcg2-protocol.h"
 #include "tcg2-util.h"
+#include "util.h"
 
 #define TRUE_STR L"true"
 #define FALSE_STR L"false"
@@ -171,4 +173,93 @@ TCG_DIGEST2* EFIAPI
 get_next_digest (TCG_DIGEST2* digest)
 {
     return (TCG_DIGEST2*)(digest->Digest + get_alg_size (digest->AlgorithmId));
+}
+bool EFIAPI
+is_pcr_selected (BYTE pcr_selection[],
+                 uint8_t pcr)
+{
+    return pcr_selection [pcr/8] & (1 << (pcr % 8));
+}
+void EFIAPI
+select_pcr (BYTE pcr_selection [],
+            uint8_t pcr)
+{
+    pcr_selection [pcr/8] |= 1 << (pcr % 8);
+}
+void EFIAPI
+deselect_pcr (BYTE pcr_selection [],
+              uint8_t pcr)
+{
+    pcr_selection [pcr/8] &= ~(1 << (pcr % 8));
+}
+void
+foreach_selection (TPML_PCR_SELECTION *pcr_selection,
+                   PCR_SELECTION_CALLBACK callback,
+                   void *data)
+{
+    BYTE *selection;
+    TPMI_ALG_HASH hash;
+    uint8_t pcr;
+    size_t i;
+
+    /* iterate over TPMS_PCR_SELECTION array from TPML_PCR_SELECTION param */
+    for (i = 0; i < pcr_selection->count; ++i) {
+        /* iterate over PCRs */
+        for (pcr = 0; pcr < TPM2_MAX_PCRS; ++pcr) {
+            selection = pcr_selection->pcrSelections [i].pcrSelect;
+            /* if bit corresponding to pcr in selection is set */
+            if (is_pcr_selected (selection, pcr)) {
+                hash = pcr_selection->pcrSelections [i].hash;
+                if (callback (hash, pcr, data) == false)
+                    return;
+            }
+        }
+    }
+}
+int
+count_algs_in_bitmap (EFI_TCG2_EVENT_ALGORITHM_BITMAP bitmap)
+{
+    size_t i, bitcount = 0;
+
+    for (i = 0; i < sizeof (bitmap) * 8; ++i) {
+        bitcount += (bitmap >> i) & 1;
+    }
+    return bitcount;
+}
+void EFIAPI
+select_all_active_pcrs (EFI_TCG2_EVENT_ALGORITHM_BITMAP active_banks,
+                        TPML_PCR_SELECTION *selections)
+{
+    size_t i;
+
+    selections->count = count_algs_in_bitmap (active_banks);
+    for (i = 0; i < selections->count; ++i) {
+        selections->pcrSelections [i].sizeofSelect = 3;
+        memset (selections->pcrSelections [i].pcrSelect, 0xff, 3);
+        if (active_banks & EFI_TCG2_BOOT_HASH_ALG_SHA1) {
+            selections->pcrSelections [i].hash = TPM2_ALG_SHA1;
+            active_banks &= ~(EFI_TCG2_BOOT_HASH_ALG_SHA1);
+            continue;
+        }
+        if (active_banks & EFI_TCG2_BOOT_HASH_ALG_SHA256) {
+            selections->pcrSelections [i].hash = TPM2_ALG_SHA256;
+            active_banks &= ~(EFI_TCG2_BOOT_HASH_ALG_SHA256);
+            continue;
+        }
+        if (active_banks & EFI_TCG2_BOOT_HASH_ALG_SHA384) {
+            selections->pcrSelections [i].hash = TPM2_ALG_SHA384;
+            active_banks &= ~(EFI_TCG2_BOOT_HASH_ALG_SHA384);
+            continue;
+        }
+        if (active_banks & EFI_TCG2_BOOT_HASH_ALG_SHA512) {
+            selections->pcrSelections [i].hash = TPM2_ALG_SHA512;
+            active_banks &= ~(EFI_TCG2_BOOT_HASH_ALG_SHA512);
+            continue;
+        }
+        if (active_banks & EFI_TCG2_BOOT_HASH_ALG_SM3_256) {
+            selections->pcrSelections [i].hash = TPM2_ALG_SM3_256;
+            active_banks &= ~(EFI_TCG2_BOOT_HASH_ALG_SM3_256);
+            continue;
+        }
+    }
 }
