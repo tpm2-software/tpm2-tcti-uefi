@@ -1,6 +1,5 @@
 /* SPDX-License-Identifier: BSD-2 */
 #include <efi/efi.h>
-#include <efi/efilib.h>
 #include <stdlib.h>
 
 #include "tcg2-protocol.h"
