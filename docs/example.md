@@ -73,6 +73,14 @@ hash function supported was SHA1. The newer 'crypto-agile' format supports
 variable length hashes allowing the use of SHA256, SHA384 etc. This tool
 prints the highest supported log version available to stdout.
 
+## Get TPM2 PCRs
+Querying a TPM2 for the current state of the PCRs is surpisingly complext.
+This is a consequence of the TPM2 supporting an effectively unlimited
+number of hash algorithms and lengths. To keep the interface to the tool
+simple (no command line parameters) this tool queries the TPM for the
+currently active PCR banks. It then displayes the current state of all
+PCRs in all active banks.
+
 ## Running the example applications
 The example applications may be run from the UEFI shell on your computer.
 A test setup like this is often referred to as a "bare-metal" test
