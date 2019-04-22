@@ -118,12 +118,8 @@ tcg2_get_protocol (EFI_TCG2_PROTOCOL **tcg2_protocol)
 
     status = LibLocateProtocol (&tcg2_guid, (VOID**)&tcg2_proto_tmp);
     if (!EFI_ERROR (status)) {
-        Print (L"LibLocateProtocol returned handle to EFI_TCG2_PROTOCOL: 0x%"
-               PRIxPTR "\n", (uintptr_t)tcg2_proto_tmp);
-    } else {
-        Print (L"LibLocateProtocol status: 0x%x\n", status);
+        *tcg2_protocol = tcg2_proto_tmp;
     }
-    *tcg2_protocol = tcg2_proto_tmp;
 
     return status;
 }
