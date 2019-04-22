@@ -58,6 +58,21 @@ specifying the `TPM2_CAP_TPM_PROPERTIES` capability the `TPM2_PT_FIXED`
 property. This collection of properties is then displayed as UEFI shell
 output.
 
+## Get currently active PCR banks
+The active PCR banks can be queried through the 'ActivePcrBanks' member
+of the TCG2 UEFI boot service capability structure or the dedicated
+'GetActivePcrBanks' function. The results from invoking
+'GetActivePcrBanks' is displayed. A warning is displayed if the values
+returned by these methods disagree.
+
+## Get TCG2 UEFI event log
+UEFI maintains a log of events that correspond to each 'extend' operation
+for PCRs in the active banks. There are two different log formats. The
+first is the 'legacy' log format from the older TPM spec when the only
+hash function supported was SHA1. The newer 'crypto-agile' format supports
+variable length hashes allowing the use of SHA256, SHA384 etc. This tool
+prints the highest supported log version available to stdout.
+
 ## Running the example applications
 The example applications may be run from the UEFI shell on your computer.
 A test setup like this is often referred to as a "bare-metal" test
