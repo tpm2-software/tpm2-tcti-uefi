@@ -38,3 +38,4 @@ test-suite.log
 VERSION
 src/get-capability.efi
 test/*_unit
+tpm2-tcti-uefi-*-coverage*
