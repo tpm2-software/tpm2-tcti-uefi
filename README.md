@@ -7,6 +7,14 @@ Software Stack (TSS2) in the UEFI environment. This library is built as a
 static archive `libtss2-tcti-uefi.a` suitable for linking with UEFI
 applications.
 
+# API Stability
+Methods for hiding symbols in a static arcive from users are not portable
+and so this implementation makes no effort to do so. This does not imply
+that all symbols from the archive present part of a stable API. The only
+stable API exposed is the TCTI as specified by the TCG. This is a single
+function called `Tss2_Tcti_Uefi_Init`. All other symbols are subject to
+change without notice.
+
 # Build and Installation Instructions
 Instructions to build and install `libtss2-tcti-uefi.a` are available in
 the [INSTALL](INSTALL.md) file.
