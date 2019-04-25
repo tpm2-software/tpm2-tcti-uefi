@@ -39,9 +39,8 @@ after_failure:
 
 after_success:
   - |
-    if [ ! -z "$COVERALLS_REPO_TOKEN" ] && [ "${CC}" = "gcc" ]; then
-      coveralls --build-root=$(pwd) --exclude=./example --exclude=./test \
-        --gcov-options '\-lp'
+    if [ "${CONFIG_EXTRA}" == "--enable-code-coverage" ]; then
+        bash <(curl -s https://codecov.io/bash)
     fi
 
 install:
