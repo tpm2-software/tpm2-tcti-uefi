@@ -1,5 +1,5 @@
 [![Linux Build Status](https://travis-ci.org/tpm2-software/tpm2-tcti-uefi.svg?branch=master)](https://travis-ci.org/tpm2-software/tpm2-tcti-uefi)
-[![Coverage Status](https://coveralls.io/repos/github/tpm2-software/tpm2-tcti-uefi/badge.svg?branch=master)](https://coveralls.io/github/tpm2-software/tpm2-tcti-uefi?branch=master)
+[![codecov](https://codecov.io/gh/tpm2-software/tpm2-tcti-uefi/branch/master/graph/badge.svg)](https://codecov.io/gh/tpm2-software/tpm2-tcti-uefi)
 
 # Overview
 This is an implementation of a TCTI module for use with the TCG TPM2
