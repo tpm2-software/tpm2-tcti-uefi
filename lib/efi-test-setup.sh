@@ -15,6 +15,7 @@ print_usage ()
 Usage:
     $0 --ovmf=/usr/share/ovmf/OVMF.fd
        --startup-template=/path/to/template
+       --preserve-tmp
         TEST-SCRIPT [TEST-SCRIPT-ARGUMENTS]
 END
 }
@@ -25,6 +26,7 @@ while test $# -gt 0; do
     -o=*|--ovmf=*) OVMF_FD="${1#*=}";;
     -s|--startup-template) STARTUP_TEMPLATE=$2; shift;;
     -s=*|--startup-template=*) STARTUP_TEMPLATE="${1#*=}";;
+    -p|--preserve-tmp) PRESERVE_TMP=yes;;
     --) shift; break;;
     -*) usage_error "invalid option: '$1'";;
      *) break;;
@@ -36,6 +38,7 @@ TEST_EXEC=$1
 TEST_NAME=$(basename $1)
 shift
 TEST_ARGS=$@
+PRESERVE_TMP=${PRESERVE_TMP:-no}
 TMP_DIR=$(mktemp --directory /tmp/tpm2-tcti-uefi_${TEST_NAME}.XXXXXXXX)
 OVMF_FD=${OVMF_FD:-/usr/share/ovmf/OVMF.fd}
 
@@ -71,7 +74,7 @@ ret=$?
 cat ${TMP_DIR}/${TEST_NAME}_swtpm.log
 cat ${TMP_DIR}/${TEST_NAME}_qemu.log
 
-if [ $ret -eq 0 ]; then
+if [ ${PRESERVE_TMP} == 'no' ]; then
     rm -rf ${TMP_DIR}
 fi
 exit $ret
