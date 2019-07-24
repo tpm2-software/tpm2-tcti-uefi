@@ -16,6 +16,7 @@ Usage:
     $0 --ovmf=/usr/share/ovmf/OVMF.fd
        --startup-template=/path/to/template
        --preserve-tmp
+       --tmp-dir=/tmp/foo
         TEST-SCRIPT [TEST-SCRIPT-ARGUMENTS]
 END
 }
@@ -27,6 +28,8 @@ while test $# -gt 0; do
     -s|--startup-template) STARTUP_TEMPLATE=$2; shift;;
     -s=*|--startup-template=*) STARTUP_TEMPLATE="${1#*=}";;
     -p|--preserve-tmp) PRESERVE_TMP=yes;;
+    -t|--tmp-dir) TMP_DIR=$2; shift;;
+    -t=*|--tmp-dir=*) TMP_DIR="${1#*=}";;
     --) shift; break;;
     -*) usage_error "invalid option: '$1'";;
      *) break;;
@@ -39,7 +42,7 @@ TEST_NAME=$(basename $1)
 shift
 TEST_ARGS=$@
 PRESERVE_TMP=${PRESERVE_TMP:-no}
-TMP_DIR=$(mktemp --directory /tmp/tpm2-tcti-uefi_${TEST_NAME}.XXXXXXXX)
+TMP_DIR=${TMP_DIR:-$(mktemp --directory /tmp/tpm2-tcti-uefi_${TEST_NAME}.XXXXXXXX)}
 OVMF_FD=${OVMF_FD:-/usr/share/ovmf/OVMF.fd}
 
 if [ -z ${STARTUP_TEMPLATE} ]; then
