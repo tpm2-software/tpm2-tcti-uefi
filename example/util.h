@@ -43,3 +43,11 @@ count_algs_in_bitmap (EFI_TCG2_EVENT_ALGORITHM_BITMAP bitmap);
 void EFIAPI
 select_all_active_pcrs (EFI_TCG2_EVENT_ALGORITHM_BITMAP active_banks,
                         TPML_PCR_SELECTION *selections);
+void
+prettyprint_tpm2_digest (TCG_DIGEST2 *digest);
+void
+prettyprint_tpm2_event_header (TCG_EVENT_HEADER2 *event_hdr);
+void
+prettyprint_tpm2_eventbuf (TCG_EVENT2 *event);
+TCG_EVENT_HEADER2*
+prettyprint_tpm2_event (TCG_EVENT_HEADER2 *event_hdr);

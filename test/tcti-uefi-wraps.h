@@ -46,5 +46,10 @@ __wrap_tcg2_submit_command (EFI_TCG2_PROTOCOL *tcg2_protocol,
                             UINT8 *input_buf,
                             UINT32 output_size,
                             UINT8 *output_buf);
+VOID
+__wrap_DumpHex (IN UINTN Indent,
+                IN UINTN Offset,
+                IN UINTN DataSize,
+                IN VOID *UserData);
 
 #endif /* TCTI_UEFI_WRAPS_H */
