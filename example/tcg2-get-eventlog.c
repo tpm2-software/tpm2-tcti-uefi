@@ -62,52 +62,6 @@ prettyprint_tpm12_eventlog (EFI_PHYSICAL_ADDRESS first,
     } while ((event = tpm12_event_next (event, event_last)) != NULL);
 }
 static void
-prettyprint_tpm2_eventbuf (TCG_EVENT2 *event)
-{
-    Print (L"  Event: %" PRIu32 " bytes\n", event->EventSize);
-    DumpHex (2, 0, event->EventSize, event->Event);
-}
-static void
-prettyprint_tpm2_digest (TCG_DIGEST2 *digest)
-{
-    size_t digest_size;
-
-    Print (L"    AlgorithmId: %s (0x%" PRIx16 ")\n",
-           get_alg_name (digest->AlgorithmId), digest->AlgorithmId);
-    /* map alg id to alg size to get buffer size */
-    digest_size = get_alg_size (digest->AlgorithmId);
-    Print (L"    Digest: %d bytes\n", digest_size);
-    DumpHex (4, 0, digest_size, digest->Digest);
-}
-static void
-prettyprint_tpm2_event_header (TCG_EVENT_HEADER2 *event_hdr)
-{
-    Print (L"  PCRIndex: %d\n", event_hdr->PCRIndex);
-    Print (L"  EventType: %s (0x%" PRIx32 ")\n",
-           eventtype_to_string (event_hdr->EventType),
-           event_hdr->EventType);
-    Print (L"  DigestCount: %d\n", event_hdr->DigestCount);
-}
-static TCG_EVENT_HEADER2*
-prettyprint_tpm2_event (TCG_EVENT_HEADER2 *event_hdr)
-{
-    TCG_DIGEST2 *digest;
-    TCG_EVENT2 *event;
-    size_t i;
-
-    prettyprint_tpm2_event_header (event_hdr);
-    digest = (TCG_DIGEST2*)event_hdr->Digests;
-    for (i = 0; i < event_hdr->DigestCount; ++i) {
-        Print (L"  TCG_DIGEST2: %u\n", i);
-        prettyprint_tpm2_digest (digest);
-        digest = get_next_digest (digest);
-    }
-    event = (TCG_EVENT2*)digest;
-    prettyprint_tpm2_eventbuf (event);
-
-    return (TCG_EVENT_HEADER2*)(event->Event + event->EventSize);
-}
-static void
 prettyprint_tpm2_eventlog (EFI_PHYSICAL_ADDRESS first,
                            EFI_PHYSICAL_ADDRESS last)
 {

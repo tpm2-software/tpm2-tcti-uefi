@@ -168,11 +168,11 @@ AUTHORS :
 # variables to simplify test rules
 TEST_FLAGS = $(CMOCKA_CFLAGS) $(EXTRA_CFLAGS) $(AM_CFLAGS) \
     $(CODE_COVERAGE_CFLAGS)
-TEST_LIBS = $(CMOCKA_LIBS) $(CODE_COVERAGE_LIBS) src/libtss2-tcti-uefi.a \
-    test/libtest-util.a
+TEST_LIBS = $(libexample_util) $(CMOCKA_LIBS) $(CODE_COVERAGE_LIBS) \
+    src/libtss2-tcti-uefi.a test/libtest-util.a
 TEST_WRAPS_TCTI = -Wl,--wrap=AllocatePool,--wrap=CopyMem,--wrap=FreePool \
     -Wl,--wrap=Print,--wrap=tcg2_get_capability,--wrap=tcg2_get_max_buf \
-    -Wl,--wrap=tcg2_get_protocol,--wrap=tcg2_submit_command
+    -Wl,--wrap=tcg2_get_protocol,--wrap=tcg2_submit_command,--wrap=DumpHex
 TEST_WRAPS_TCG2 = -Wl,--wrap=AllocatePool,--wrap=CopyMem \
     -Wl,--wrap=FreePool,--wrap=Print,--wrap=efi_call2,--wrap=efi_call5 \
     -Wl,--wrap=LibLocateProtocol
@@ -184,7 +184,7 @@ test_libtest_util_a_SOURCES = test/tcti-uefi-wraps.c test/tcti-uefi-wraps.h
 
 # rules to build test executables
 test_example_util_unit_CFLAGS = $(TEST_FLAGS) -DGNU_EFI_SETJMP_H
-test_example_util_unit_LDADD = $(libexample_util) $(TEST_LIBS)
+test_example_util_unit_LDADD = $(TEST_LIBS)
 test_example_util_unit_LDFLAGS = $(TEST_WRAPS_TCTI)
 test_example_util_unit_SOURCES = test/example-util_unit.c
 

@@ -115,3 +115,11 @@ __wrap_LibLocateProtocol (IN  EFI_GUID *ProtocolGuid,
     *Interface = mock_type (void*);
     return mock_type (EFI_STATUS);
 }
+VOID
+__wrap_DumpHex (IN UINTN Indent,
+                IN UINTN Offset,
+                IN UINTN DataSize,
+                IN VOID *UserData)
+{
+    Print ("%s\n", __func__);
+}
