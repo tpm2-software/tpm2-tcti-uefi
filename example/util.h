@@ -45,9 +45,21 @@ select_all_active_pcrs (EFI_TCG2_EVENT_ALGORITHM_BITMAP active_banks,
                         TPML_PCR_SELECTION *selections);
 void
 prettyprint_tpm2_digest (TCG_DIGEST2 *digest);
+bool
+prettyprint_tpm2_digest_callback (TCG_DIGEST2 *digest,
+                                  void *data);
 void
 prettyprint_tpm2_event_header (TCG_EVENT_HEADER2 *event_hdr);
 void
 prettyprint_tpm2_eventbuf (TCG_EVENT2 *event);
 TCG_EVENT_HEADER2*
 prettyprint_tpm2_event (TCG_EVENT_HEADER2 *event_hdr);
+
+typedef bool (*DIGEST2_CALLBACK) (TCG_DIGEST2 *digest,
+                                  void *data);
+bool
+foreach_digest2 (TCG_EVENT_HEADER2 *event_hdr,
+                 DIGEST2_CALLBACK callback,
+                 void *data);
+size_t
+sizeof_digest2 (TCG_DIGEST2 *digest);

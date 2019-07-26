@@ -277,6 +277,18 @@ prettyprint_tpm2_digest (TCG_DIGEST2 *digest)
     Print (L"    Digest: %d bytes\n", digest_size);
     DumpHex (4, 0, digest_size, digest->Digest);
 }
+bool
+prettyprint_tpm2_digest_callback (TCG_DIGEST2 *digest,
+                                  void *data)
+{
+    size_t *size = (size_t*)data;
+
+    prettyprint_tpm2_digest (digest);
+    if (size) {
+        *size += sizeof_digest2 (digest);
+    }
+    return true;
+}
 void
 prettyprint_tpm2_event_header (TCG_EVENT_HEADER2 *event_hdr)
 {
@@ -296,19 +308,42 @@ prettyprint_tpm2_eventbuf (TCG_EVENT2 *event)
 TCG_EVENT_HEADER2*
 prettyprint_tpm2_event (TCG_EVENT_HEADER2 *event_hdr)
 {
-    TCG_DIGEST2 *digest;
     TCG_EVENT2 *event;
-    size_t i;
+    size_t digests_size = 0;
+    bool ret;
 
-    prettyprint_tpm2_event_header (event_hdr);
-    digest = (TCG_DIGEST2*)event_hdr->Digests;
-    for (i = 0; i < event_hdr->DigestCount; ++i) {
-        Print (L"  TCG_DIGEST2: %u\n", i);
-        prettyprint_tpm2_digest (digest);
-        digest = get_next_digest (digest);
+    if (event_hdr == NULL) {
+        return NULL;
     }
-    event = (TCG_EVENT2*)digest;
+    prettyprint_tpm2_event_header (event_hdr);
+    ret = foreach_digest2 (event_hdr,
+                           prettyprint_tpm2_digest_callback,
+                           &digests_size);
+    if (!ret)
+        return NULL;
+    event = (TCG_EVENT2*)((uintptr_t)event_hdr->Digests + digests_size);
     prettyprint_tpm2_eventbuf (event);
 
     return (TCG_EVENT_HEADER2*)(event->Event + event->EventSize);
+}
+bool
+foreach_digest2 (TCG_EVENT_HEADER2 *event_hdr,
+                 DIGEST2_CALLBACK callback,
+                 void *data)
+{
+    bool ret = true;
+
+    TCG_DIGEST2 *digest = (TCG_DIGEST2*)event_hdr->Digests;
+    for (size_t i = 0; i < event_hdr->DigestCount && digest != NULL; ++i) {
+        ret = callback (digest, data);
+        if (!ret)
+            break;
+        digest = get_next_digest (digest);
+    }
+    return ret;
+}
+size_t
+sizeof_digest2 (TCG_DIGEST2 *digest)
+{
+    return sizeof (*digest) + get_alg_size (digest->AlgorithmId);
 }
