@@ -67,7 +67,6 @@ prettyprint_tpm2_eventlog (EFI_PHYSICAL_ADDRESS first,
 {
     TCG_EVENT_HEADER2 *event = (TCG_EVENT_HEADER2*)first;
     TCG_EVENT_HEADER2 *event_last = (TCG_EVENT_HEADER2*)last;
-    size_t i;
 
     if (event == NULL) {
         Print (L"TPM2 EventLog is empty.\n");
@@ -75,10 +74,7 @@ prettyprint_tpm2_eventlog (EFI_PHYSICAL_ADDRESS first,
     }
 
     Print (L"TPM2 EventLog, EFI_TCG2_EVENT_LOG_FORMAT_TCG_2 format\n");
-    for (i = 0; event <= event_last; ++i) {
-        Print (L"EVENT: %" PRIu32 "\n", i);
-        event = prettyprint_tpm2_event (event);
-    }
+    foreach_event2 (event, event_last, prettyprint_tpm2_event_callback, NULL);
     Print (L"TPM2 EventLog end\n");
 }
 static void

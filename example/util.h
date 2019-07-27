@@ -52,8 +52,11 @@ void
 prettyprint_tpm2_event_header (TCG_EVENT_HEADER2 *event_hdr);
 void
 prettyprint_tpm2_eventbuf (TCG_EVENT2 *event);
-TCG_EVENT_HEADER2*
+void
 prettyprint_tpm2_event (TCG_EVENT_HEADER2 *event_hdr);
+bool
+prettyprint_tpm2_event_callback (TCG_EVENT_HEADER2 *event_hdr,
+                                 void *data);
 
 typedef bool (*DIGEST2_CALLBACK) (TCG_DIGEST2 *digest,
                                   void *data);
@@ -61,5 +64,11 @@ bool
 foreach_digest2 (TCG_EVENT_HEADER2 *event_hdr,
                  DIGEST2_CALLBACK callback,
                  void *data);
-size_t
-sizeof_digest2 (TCG_DIGEST2 *digest);
+
+typedef bool (*EVENT2_CALLBACK) (TCG_EVENT_HEADER2 *event_hdr,
+                                 void *data);
+bool
+foreach_event2 (TCG_EVENT_HEADER2 *event_hdr,
+                TCG_EVENT_HEADER2 *last_hdr,
+                EVENT2_CALLBACK callback,
+                void *data);
