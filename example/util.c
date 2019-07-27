@@ -277,6 +277,11 @@ prettyprint_tpm2_digest (TCG_DIGEST2 *digest)
     Print (L"    Digest: %d bytes\n", digest_size);
     DumpHex (4, 0, digest_size, digest->Digest);
 }
+size_t
+sizeof_digest2 (TCG_DIGEST2 *digest)
+{
+    return sizeof (*digest) + get_alg_size (digest->AlgorithmId);
+}
 bool
 prettyprint_tpm2_digest_callback (TCG_DIGEST2 *digest,
                                   void *data)
@@ -305,7 +310,7 @@ prettyprint_tpm2_eventbuf (TCG_EVENT2 *event)
     DumpHex (2, 0, event->EventSize, event->Event);
 }
 
-TCG_EVENT_HEADER2*
+void
 prettyprint_tpm2_event (TCG_EVENT_HEADER2 *event_hdr)
 {
     TCG_EVENT2 *event;
@@ -313,18 +318,23 @@ prettyprint_tpm2_event (TCG_EVENT_HEADER2 *event_hdr)
     bool ret;
 
     if (event_hdr == NULL) {
-        return NULL;
+        return;
     }
     prettyprint_tpm2_event_header (event_hdr);
     ret = foreach_digest2 (event_hdr,
                            prettyprint_tpm2_digest_callback,
                            &digests_size);
     if (!ret)
-        return NULL;
+        return;
     event = (TCG_EVENT2*)((uintptr_t)event_hdr->Digests + digests_size);
     prettyprint_tpm2_eventbuf (event);
-
-    return (TCG_EVENT_HEADER2*)(event->Event + event->EventSize);
+}
+bool
+prettyprint_tpm2_event_callback (TCG_EVENT_HEADER2 *event_hdr,
+                                 void *data)
+{
+    prettyprint_tpm2_event (event_hdr);
+    return true;
 }
 bool
 foreach_digest2 (TCG_EVENT_HEADER2 *event_hdr,
@@ -342,8 +352,51 @@ foreach_digest2 (TCG_EVENT_HEADER2 *event_hdr,
     }
     return ret;
 }
-size_t
-sizeof_digest2 (TCG_DIGEST2 *digest)
+typedef bool (*EVENT2_CALLBACK) (TCG_EVENT_HEADER2 *event_hdr,
+                                 void *data);
+static bool
+digest2_accumulator_callback (TCG_DIGEST2 *digest,
+                              void *data)
 {
-    return sizeof (*digest) + get_alg_size (digest->AlgorithmId);
+    size_t *size = (size_t*)data;
+    if (size == NULL)
+        return false;
+
+    *size += sizeof_digest2 (digest);
+    return true;
+}
+TCG_EVENT_HEADER2*
+get_next_event (TCG_EVENT_HEADER2 *event_hdr)
+{
+    size_t digests_size = 0;
+    bool ret;
+    TCG_EVENT2 *event;
+
+    ret = foreach_digest2 (event_hdr,
+                           digest2_accumulator_callback,
+                           &digests_size);
+    if (!ret)
+        return NULL;
+    event = (TCG_EVENT2*)((uintptr_t)event_hdr->Digests + digests_size);
+    return (TCG_EVENT_HEADER2*)((uintptr_t)event->Event + event->EventSize);
+}
+bool
+foreach_event2 (TCG_EVENT_HEADER2 *event_first,
+                TCG_EVENT_HEADER2 *event_last,
+                EVENT2_CALLBACK callback,
+                void *data)
+{
+    TCG_EVENT_HEADER2 *event;
+
+    if (event_first == NULL || event_last == NULL || callback == NULL)
+        return NULL;
+
+    for (event = event_first;
+         event <= event_last && event != NULL;
+         event = get_next_event (event))
+    {
+        if (!callback (event, data))
+            return false;
+    }
+    return true;
 }
