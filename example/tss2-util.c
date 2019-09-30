@@ -1,6 +1,12 @@
 /* SPDX-License-Identifier: BSD-2 */
+#ifndef EDK2_BUILD
 #include <efi/efi.h>
 #include <efi/efilib.h>
+#else
+#include <Uefi.h>
+#include <Library/UefiLib.h>
+#include <Library/MemoryAllocationLib.h>
+#endif
 
 #include <tss2/tss2_tcti.h>
 #include <tss2/tss2_sys.h>

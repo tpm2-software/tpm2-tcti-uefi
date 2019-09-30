@@ -1,6 +1,11 @@
 /* SPDX-License-Identifier: BSD-2 */
+#ifndef EDK2_BUILD
 #include <efi/efi.h>
 #include <efi/efilib.h>
+#else
+#include <Uefi.h>
+#include <Library/UefiLib.h>
+#endif
 
 #include <inttypes.h>
 #include <stdlib.h>
@@ -102,7 +107,9 @@ efi_main (
     TSS2_RC rc;
     TSS2_SYS_CONTEXT *sys_ctx;
 
+#ifndef EDK2_BUILD
     InitializeLib (ImageHandle, SystemTable);
+#endif
     status = tcg2_get_protocol (&tcg2_protocol);
     if (EFI_ERROR (status)) {
         return status;

@@ -1,5 +1,10 @@
 /* SPDX-License-Identifier: BSD-2 */
+#ifndef EDK2_BUILD
 #include <efi/efi.h>
+#else
+#include <Uefi.h>
+#endif
+
 #include <stdbool.h>
 #include <stdlib.h>
 #include <wchar.h>

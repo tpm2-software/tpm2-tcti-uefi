@@ -1,6 +1,11 @@
 /* SPDX-License-Identifier: BSD-2 */
+#ifndef EDK2_BUILD
 #include <efi/efi.h>
 #include <efi/efilib.h>
+#else
+#include <Uefi.h>
+#include <Library/UefiLib.h>
+#endif
 
 #include "tcg2-protocol.h"
 #include "tcg2-util.h"
@@ -35,6 +40,10 @@ tcg2_caps_prettyprint (EFI_TCG2_BOOT_SERVICE_CAPABILITY *caps)
     tcg2_algorithm_bitmap_prettyprint (caps->ActivePcrBanks);
 }
 
+#if !defined(uefi_call_wrapper)
+#define uefi_call_wrapper(func, va_num, ...) func(__VA_ARGS__)
+#endif
+
 EFI_STATUS
 get_capability_tcg2 (
     EFI_TCG2_PROTOCOL *tcg2_protocol,
@@ -66,7 +75,9 @@ efi_main (
         .Size = sizeof (EFI_TCG2_BOOT_SERVICE_CAPABILITY),
     };
 
+#ifndef EDK2_BUILD
     InitializeLib (ImageHandle, SystemTable);
+#endif
     status = tcg2_get_protocol (&tcg2_protocol);
     if (EFI_ERROR (status)) {
         return status;

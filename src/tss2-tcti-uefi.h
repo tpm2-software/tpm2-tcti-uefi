@@ -2,8 +2,13 @@
 #ifndef TSS2_TCTI_UEFI_H
 #define TSS2_TCTI_UEFI_H
 
+#ifndef EDK2_BUILD
+#include <efi/efi.h>
+#else
+#include <Uefi.h>
+#endif
+
 #include <tss2/tss2_tcti.h>
-#include <efi.h>
 
 #ifdef __cplusplus
 extern "C" {

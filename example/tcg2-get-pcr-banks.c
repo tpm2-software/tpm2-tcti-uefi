@@ -1,8 +1,14 @@
 /* SPDX-License-Identifier: BSD-2 */
-#include <inttypes.h>
-
+#ifndef EDK2_BUILD
 #include <efi/efi.h>
 #include <efi/efilib.h>
+#else
+#include <Uefi.h>
+#include <Library/UefiLib.h>
+#endif
+
+#include <inttypes.h>
+#include <string.h>
 
 #include "tcg2-util.h"
 #include "util.h"
@@ -24,7 +30,9 @@ efi_main (
     EFI_TCG2_EVENT_ALGORITHM_BITMAP active_banks = 0;
     UINT8 proto_major, proto_minor;
 
+#ifndef EDK2_BUILD
     InitializeLib (ImageHandle, SystemTable);
+#endif
     status = tcg2_get_protocol (&tcg2_protocol);
     if (EFI_ERROR (status)) {
         return status;
