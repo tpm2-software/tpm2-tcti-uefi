@@ -2,7 +2,11 @@
 #ifndef TCG2_UTIL_H
 #define TCG2_UTIL_H
 
+#ifndef EDK2_BUILD
 #include <efi/efi.h>
+#else
+#include <Uefi.h>
+#endif
 
 #include "tcg2-protocol.h"
 

@@ -1,8 +1,14 @@
 /* SPDX-License-Identifier: BSD-2 */
-#include <inttypes.h>
-
+#ifndef EDK2_BUILD
 #include <efi/efi.h>
 #include <efi/efilib.h>
+#else
+#include <Uefi.h>
+#include <Library/UefiLib.h>
+#endif
+
+#include <inttypes.h>
+#include <string.h>
 
 #include <tss2/tss2_mu.h>
 #include <tss2/tss2_sys.h>
@@ -276,7 +282,9 @@ efi_main (
     /* TPMS_CAPABILITY_DATA capability_data = { .capability = 0 }; */
     TPMS_CAPABILITY_DATA capability_data = { 0 };
 
+#ifndef EDK2_BUILD
     InitializeLib (ImageHandle, SystemTable);
+#endif
     rc = sys_uefi_init (&sys_ctx);
     if (rc != TSS2_RC_SUCCESS) {
         return EFI_ABORTED;

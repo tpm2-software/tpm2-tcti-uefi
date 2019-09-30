@@ -1,10 +1,20 @@
 /* SPDX-License-Identifier: BSD-2 */
 #include <inttypes.h>
 
+#ifndef EDK2_BUILD
 #include <efi/efi.h>
 #include <efi/efilib.h>
-
+#else
+#include <Uefi.h>
+#include <Library/UefiLib.h>
+#include <Library/UefiBootServicesTableLib.h>
+#define LibLocateProtocol(foo, bar) gBS->LocateProtocol(foo, NULL, bar)
+#endif
 #include "tcg2-protocol.h"
+
+#if !defined(uefi_call_wrapper)
+#define uefi_call_wrapper(func, va_num, ...) func(__VA_ARGS__)
+#endif
 
 EFI_STATUS
 tcg2_get_eventlog (EFI_TCG2_PROTOCOL *tpm2_prot,

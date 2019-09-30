@@ -1,12 +1,21 @@
 /* SPDX-License-Identifier: BSD-2 */
-#include <inttypes.h>
-
+#ifndef EDK2_BUILD
 #include <efi/efi.h>
 #include <efi/efilib.h>
+#else
+#include <Uefi.h>
+#include <Library/BaseMemoryLib.h>
+#include <Library/UefiLib.h>
+#include <Library/UefiBootServicesTableLib.h>
+#define LibLocateProtocol(foo, bar) gBS->LocateProtocol(foo, NULL, bar)
+#endif
+
+#include <inttypes.h>
 
 #include <tss2/tss2_tpm2_types.h>
 #include <tss2/tss2_tcti.h>
 
+#include "tcg2-protocol.h"
 #include "tcg2-util.h"
 #include "tss2-tcti-uefi.h"
 #include "tcti-uefi.h"
