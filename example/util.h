@@ -14,35 +14,35 @@ typedef bool (*PCR_SELECTION_CALLBACK) (TPMI_ALG_HASH alg,
 
 wchar_t*
 bitmap_val_str (UINT32 member, UINT32 selector);
-void EFIAPI
+void
 tcg2_algorithm_bitmap_prettyprint (EFI_TCG2_EVENT_ALGORITHM_BITMAP bitmap);
-wchar_t* EFIAPI
+wchar_t*
 eventtype_to_string (TCG_EVENTTYPE event_type);
-size_t EFIAPI
+size_t
 get_alg_size (UINT16 alg_id);
-wchar_t* EFIAPI
+wchar_t*
 get_alg_name (UINT16 alg_id);
-EFI_STATUS EFIAPI
+EFI_STATUS
 get_eventlog_format_high (EFI_TCG2_PROTOCOL *tcg2_protocol,
                           EFI_TCG2_EVENT_LOG_FORMAT *format);
-TCG_DIGEST2* EFIAPI
+TCG_DIGEST2*
 get_next_digest (TCG_DIGEST2* digest);
-bool EFIAPI
+bool
 is_pcr_selected (BYTE pcr_selection[],
                  uint8_t pcr);
-void EFIAPI
+void
 select_pcr (BYTE pcr_selection [],
             uint8_t pcr);
-void EFIAPI
+void
 deselect_pcr (BYTE pcr_selection [],
               uint8_t pcr);
 void
 foreach_selection (TPML_PCR_SELECTION *pcr_selection,
                    PCR_SELECTION_CALLBACK callback,
                    void *data);
-int EFIAPI
+int
 count_algs_in_bitmap (EFI_TCG2_EVENT_ALGORITHM_BITMAP bitmap);
-void EFIAPI
+void
 select_all_active_pcrs (EFI_TCG2_EVENT_ALGORITHM_BITMAP active_banks,
                         TPML_PCR_SELECTION *selections);
 void

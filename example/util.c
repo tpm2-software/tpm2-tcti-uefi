@@ -26,7 +26,7 @@ bitmap_val_str (UINT32 member, UINT32 selector)
     }
 }
 
-void EFIAPI
+void
 tcg2_algorithm_bitmap_prettyprint (EFI_TCG2_EVENT_ALGORITHM_BITMAP bitmap)
 {
     Print (L"    EFI_TCG2_BOOT_HASH_ALG_SHA1: %s\n",
@@ -40,7 +40,7 @@ tcg2_algorithm_bitmap_prettyprint (EFI_TCG2_EVENT_ALGORITHM_BITMAP bitmap)
     Print (L"    EFI_TCG2_BOOT_HASH_ALG_SM3_256: %s\n",
         bitmap_val_str (bitmap, EFI_TCG2_BOOT_HASH_ALG_SM3_256));
 }
-wchar_t* EFIAPI
+wchar_t*
 eventtype_to_string (TCG_EVENTTYPE event_type)
 {
     switch (event_type) {
@@ -124,7 +124,7 @@ get_alg_size (UINT16 alg_id)
         return 0;
     }
 }
-wchar_t* EFIAPI
+wchar_t*
 get_alg_name (UINT16 alg_id)
 {
     switch (alg_id) {
@@ -150,7 +150,7 @@ get_alg_name (UINT16 alg_id)
  * function will still return EFI_SUCCESS, but the 'format' parameter
  * will be set to 0.
  */
-EFI_STATUS EFIAPI
+EFI_STATUS
 get_eventlog_format_high (EFI_TCG2_PROTOCOL *tcg2_protocol,
                           EFI_TCG2_EVENT_LOG_FORMAT *format)
 {
@@ -172,24 +172,24 @@ get_eventlog_format_high (EFI_TCG2_PROTOCOL *tcg2_protocol,
     }
     return EFI_SUCCESS;
 }
-TCG_DIGEST2* EFIAPI
+TCG_DIGEST2*
 get_next_digest (TCG_DIGEST2* digest)
 {
     return (TCG_DIGEST2*)(digest->Digest + get_alg_size (digest->AlgorithmId));
 }
-bool EFIAPI
+bool
 is_pcr_selected (BYTE pcr_selection[],
                  uint8_t pcr)
 {
     return pcr_selection [pcr/8] & (1 << (pcr % 8));
 }
-void EFIAPI
+void
 select_pcr (BYTE pcr_selection [],
             uint8_t pcr)
 {
     pcr_selection [pcr/8] |= 1 << (pcr % 8);
 }
-void EFIAPI
+void
 deselect_pcr (BYTE pcr_selection [],
               uint8_t pcr)
 {
@@ -229,7 +229,7 @@ count_algs_in_bitmap (EFI_TCG2_EVENT_ALGORITHM_BITMAP bitmap)
     }
     return bitcount;
 }
-void EFIAPI
+void
 select_all_active_pcrs (EFI_TCG2_EVENT_ALGORITHM_BITMAP active_banks,
                         TPML_PCR_SELECTION *selections)
 {

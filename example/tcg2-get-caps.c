@@ -6,7 +6,7 @@
 #include "tcg2-util.h"
 #include "util.h"
 
-void EFIAPI
+void
 tcg2_caps_prettyprint (EFI_TCG2_BOOT_SERVICE_CAPABILITY *caps)
 {
     Print (L"TPM2 Capabilities:\n");
@@ -35,7 +35,7 @@ tcg2_caps_prettyprint (EFI_TCG2_BOOT_SERVICE_CAPABILITY *caps)
     tcg2_algorithm_bitmap_prettyprint (caps->ActivePcrBanks);
 }
 
-EFI_STATUS EFIAPI
+EFI_STATUS
 get_capability_tcg2 (
     EFI_TCG2_PROTOCOL *tcg2_protocol,
     EFI_TCG2_BOOT_SERVICE_CAPABILITY *tcg2_bs_caps
