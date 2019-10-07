@@ -146,8 +146,7 @@ example/tpm2-get-pcrs.so: example/tpm2-get-pcrs.$(OBJEXT)
 
 example/tcg2-get-pcr-banks.so: CFLAGS+=$(EXTRA_CFLAGS) $(AM_CFLAGS)
 example/tcg2-get-pcr-banks.so: LDFLAGS+=-Wl,--no-undefined
-example/tcg2-get-pcr-banks.so: LDLIBS+=-l:libtss2-sys.a -l:libtss2-mu.a \
-    $(CODE_COVERAGE_LIBS)
+example/tcg2-get-pcr-banks.so: LDLIBS+=$(CODE_COVERAGE_LIBS)
 example/tcg2-get-pcr-banks.so: $(libexample_util) $(libtss2_tcti_uefi)
 example/tcg2-get-pcr-banks.so: example/tcg2-get-pcr-banks.$(OBJEXT)
 
