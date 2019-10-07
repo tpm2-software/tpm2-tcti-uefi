@@ -2,6 +2,8 @@
 #include <efi/efi.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <wchar.h>
+
 #include <tss2/tss2_tpm2_types.h>
 
 #include "tcg2-protocol.h"
@@ -10,11 +12,11 @@ typedef bool (*PCR_SELECTION_CALLBACK) (TPMI_ALG_HASH alg,
                                         uint8_t pcr,
                                         void *data);
 
-WCHAR*
+wchar_t*
 bitmap_val_str (UINT32 member, UINT32 selector);
 void EFIAPI
 tcg2_algorithm_bitmap_prettyprint (EFI_TCG2_EVENT_ALGORITHM_BITMAP bitmap);
-CHAR16* EFIAPI
+wchar_t* EFIAPI
 eventtype_to_string (TCG_EVENTTYPE event_type);
 size_t EFIAPI
 get_alg_size (UINT16 alg_id);
