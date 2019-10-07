@@ -6,6 +6,7 @@
 #include <efi/efilib.h>
 
 #include "tcg2-util.h"
+#include "util.h"
 
 #define TRUE_STR L"true"
 #define FALSE_STR L"false"
