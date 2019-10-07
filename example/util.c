@@ -5,6 +5,7 @@
 #include <inttypes.h>
 #include <stdlib.h>
 #include <string.h>
+#include <wchar.h>
 
 #include <tss2/tss2_tpm2_types.h>
 
@@ -15,7 +16,7 @@
 #define TRUE_STR L"true"
 #define FALSE_STR L"false"
 
-WCHAR*
+wchar_t*
 bitmap_val_str (UINT32 member, UINT32 selector)
 {
     if (member & selector) {
@@ -39,7 +40,7 @@ tcg2_algorithm_bitmap_prettyprint (EFI_TCG2_EVENT_ALGORITHM_BITMAP bitmap)
     Print (L"    EFI_TCG2_BOOT_HASH_ALG_SM3_256: %s\n",
         bitmap_val_str (bitmap, EFI_TCG2_BOOT_HASH_ALG_SM3_256));
 }
-CHAR16* EFIAPI
+wchar_t* EFIAPI
 eventtype_to_string (TCG_EVENTTYPE event_type)
 {
     switch (event_type) {
