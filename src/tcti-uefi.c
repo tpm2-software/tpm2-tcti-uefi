@@ -37,7 +37,7 @@ tcti_uefi_context_cast (TSS2_TCTI_CONTEXT *tcti_ctx)
  * functions. This means we must keep a copy of the buffer in ternally so
  * that we can send it in the 'receive' function.
  */
-TSS2_RC EFIAPI
+TSS2_RC
 tcti_uefi_transmit (TSS2_TCTI_CONTEXT *context,
                     size_t size,
                     const uint8_t *command)
@@ -70,7 +70,7 @@ tcti_uefi_transmit (TSS2_TCTI_CONTEXT *context,
  * function can only doing blocking I/O. We transmit the stored
  * command buffer from the 'transmit' function.
  */
-TSS2_RC EFIAPI
+TSS2_RC
 tcti_uefi_receive (TSS2_TCTI_CONTEXT *context,
                    size_t *size,
                    uint8_t *response,
@@ -135,7 +135,7 @@ tcti_uefi_receive (TSS2_TCTI_CONTEXT *context,
  * Finalize function only validates the context structure before setting the
  * state to 'final'.
  */
-void EFIAPI
+void
 tcti_uefi_finalize (TSS2_TCTI_CONTEXT *context)
 {
     TSS2_TCTI_UEFI_CONTEXT *tcti_uefi;
@@ -174,7 +174,7 @@ sizeof_tcti_uefi_context (void)
 /*
  * Initialization function compliant with TCTI spec.
  */
-TSS2_RC
+TSS2_RC EFIAPI
 Tss2_Tcti_Uefi_Init (TSS2_TCTI_CONTEXT *context,
                      size_t *size,
                      const char *conf)
