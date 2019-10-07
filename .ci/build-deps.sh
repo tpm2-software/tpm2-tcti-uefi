@@ -104,8 +104,10 @@ $MAKE
 sudo $MAKE install
 cd -
 
-GNUEFI_BZ2=gnu-efi-3.0.9.tar.bz2
-GNUEFI_BZ2_SHA256=6715ea7eae1c7e4fc5041034bd3f107ec2911962ed284a081e491646b12277f0
+GNUEFI_VERSION=3.0.10
+GNUEFI_NAME=gnu-efi-${GNUEFI_VERSION}
+GNUEFI_BZ2=$GNUEFI_NAME.tar.bz2
+GNUEFI_BZ2_SHA256=f12082a3a5f0c3e38c67262a9f34245d139ac2cdfc0a0bdcf03c9b1f56fa4fed
 wget "https://downloads.sourceforge.net/project/gnu-efi/${GNUEFI_BZ2}"
 sha256sum "${GNUEFI_BZ2}" | grep -q "${GNUEFI_BZ2_SHA256}"
 if [ ! $? -eq 0 ]; then
@@ -113,7 +115,7 @@ if [ ! $? -eq 0 ]; then
     exit 1
 fi
 tar axf ${GNUEFI_BZ2}
-cd gnu-efi-3.0.9
+cd ${GNUEFI_NAME}
 make
 sudo $MAKE PREFIX=${PREFIX} install
 cd -
