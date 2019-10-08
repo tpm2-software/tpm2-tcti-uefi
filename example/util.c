@@ -390,7 +390,7 @@ foreach_event2 (TCG_EVENT_HEADER2 *event_first,
     TCG_EVENT_HEADER2 *event;
 
     if (event_first == NULL || event_last == NULL || callback == NULL)
-        return NULL;
+        return false;
 
     for (event = event_first;
          event <= event_last && event != NULL;
