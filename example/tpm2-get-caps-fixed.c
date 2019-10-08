@@ -1,5 +1,4 @@
 /* SPDX-License-Identifier: BSD-2 */
-#include <endian.h>
 #include <inttypes.h>
 #include <string.h>
 
@@ -9,7 +8,6 @@
 #include <tss2/tss2_mu.h>
 #include <tss2/tss2_sys.h>
 
-#include "compat.h"
 #include "tss2-util.h"
 
 #define TPM2_HEADER_SIZE 10
@@ -24,15 +22,16 @@ static wchar_t*
 get_uint32_as_wchars (UINT32    value)
 {
     static wchar_t buf[5] = { 0, };
-    char *bytes;
-    size_t i;
+    uint8_t *bytes = (uint8_t*)&value;
+    char* chars;
+    UINT32 uintchars = 0;
 
-    value = be32toh (value);
-    bytes = (char*)&value;
+    value = Tss2_MU_UINT32_Unmarshal (bytes, sizeof (value), NULL, &uintchars);
+    chars = (char*)&uintchars;
 
     /* aproximately mbstowcs(3) */
-    for (i = 0; i < sizeof (value); ++i) {
-        buf [i] = bytes [i];
+    for (size_t i = 0; i < sizeof (value); ++i) {
+        buf [i] = chars [i];
     }
 
     return buf;
