@@ -35,7 +35,7 @@ matrix:
       env: SCANBUILD= CONFIG_EXTRA="--enable-code-coverage" MAKE_TARGET=check
 
 after_failure:
-  - cat tpm2-tcti-uefi-*/_build/sub/test-suite.log
+  - cat test-suite.log
 
 after_success:
   - |
