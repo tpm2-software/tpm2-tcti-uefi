@@ -120,7 +120,7 @@ make
 sudo $MAKE PREFIX=${PREFIX} install
 cd -
 
-git clone --branch master --single-branch --recursive \
+git clone --branch edk2-stable201908 --single-branch --recursive \
   https://github.com/tianocore/edk2
 cd edk2
 (
