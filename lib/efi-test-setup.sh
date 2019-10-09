@@ -63,7 +63,7 @@ swtpm socket --tpm2 --tpmstate dir=${TMP_DIR} \
     --ctrl type=unixio,path=${TMP_DIR}/tpm-sock \
     --log file=${TMP_DIR}/${TEST_NAME}_swtpm.log,level=20 &
 
-qemu-system-x86_64 \
+timeout --preserve-status 30s unbuffer qemu-system-x86_64 \
     -nographic \
     --bios ${OVMF_FD} \
     -drive file=fat:rw:${TMP_DIR} \
