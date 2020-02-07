@@ -3,9 +3,9 @@
 #define UEFI_TYPES_H
 
 #ifndef EDK2_BUILD
-#if ARCH == x86_64
+#if defined(__x86_64__)
 #include <efi/x86_64/efibind.h>
-#elif ARCH == ia32
+#elif defined(__i386__)
 #include <efi/ia32/efibind.h>
 #else
 #error "Unsupported ARCH."
