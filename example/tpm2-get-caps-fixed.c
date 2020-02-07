@@ -140,11 +140,11 @@ dump_tpm_properties_fixed (TPMS_TAGGED_PROPERTY properties[],
             Print (L"TPM2_PT_INPUT_BUFFER:\n"
                     "  value: 0x%X\n", value);
             break;
-        case TPM2_PT_HR_TRANSIENT_MIN:
+        case TPM2_PT_TPM2_HR_TRANSIENT_MIN:
             Print (L"TPM2_PT_TPM2_HR_TRANSIENT_MIN:\n"
                     "  value: 0x%X\n", value);
             break;
-        case TPM2_PT_HR_PERSISTENT_MIN:
+        case TPM2_PT_TPM2_HR_PERSISTENT_MIN:
             Print (L"TPM2_PT_TPM2_HR_PERSISTENT_MIN:\n"
                     "  value: 0x%X\n", value);
             break;
