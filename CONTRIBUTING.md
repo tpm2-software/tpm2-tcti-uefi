@@ -2,9 +2,7 @@
 All non security bugs should be filed on the Issues tracker:
 https://github.com/flihp/tpm2-uefi/issues
 
-Security sensitive bugs should be emailed to a maintainer directly, or using
-GitHub's reporting feature:
-- https://docs.github.com/en/code-security/security-advisories/guidance-on-reporting-and-writing/privately-reporting-a-security-vulnerability
+See SECURITY.md for details on security bugs.
 
 # Guideline for submitting changes:
 All changes should be introduced via github pull requests. For pull requests
