@@ -1,10 +1,13 @@
+echo "Starting NSH script"
 fs0:
 @echo -off
+echo "Calling @command@"
 @command@
-echo ""
+echo "Command done"
 if %lasterror% == 0 then
     set RESET_MSG "Success"
 else
     set RESET_MSG "Fail: Status = %lasterror%"
 endif
+echo "Done NSH script"
 reset -s "%RESET_MSG%"

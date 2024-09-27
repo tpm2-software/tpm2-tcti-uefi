@@ -67,8 +67,9 @@ tcti_uefi_transmit (TSS2_TCTI_CONTEXT *context,
     if (size > tcti_uefi->size || size <= TPM2_HEADER_SIZE) {
         return TSS2_TCTI_RC_BAD_VALUE;
     }
+    /* Workaround: CopyMem has no const on source */
     CopyMem (tcti_uefi->cmd_buf,
-             command,
+             (void *)command,
              size);
     tcti_uefi->state = UEFI_STATE_RECEIVE;
 

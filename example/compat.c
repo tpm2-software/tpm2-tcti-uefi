@@ -25,6 +25,7 @@ memmove (void *dest,
          const void *src,
          size_t count)
 {
-    CopyMem (dest, src, count);
+    /* Workaround: CopyMem has no const on source */
+    CopyMem (dest, (void *)src, count);
     return dest;
 }

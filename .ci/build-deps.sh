@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: BSD-2
 set -e
+set -x
 
 usage_error ()
 {
@@ -13,15 +14,13 @@ print_usage ()
 {
     cat <<END
 Usage:
-    $0 --prefix=/usr/local --edk2-target=/path/to/target.txt --workdir=/path/to/dir
+    $0 --prefix=/usr/local --workdir=/path/to/dir
 END
 }
 
 while test $# -gt 0; do
     case $1 in
     -h|--help) print_usage; exit $?;;
-    -e|--edk2-target) EDK2_TARGET=$2; shift;;
-    -e=*|--edk2-target=*) EDK2_TARGET="${1#*=}";;
     -p|--prefix) PREFIX=$2; shift;;
     -p=*|--prefix=*) PREFIX="${1#*=}";;
     -t|--tss2-config-site) TSS2_CONFIG_SITE=$2; shift;;
@@ -40,56 +39,64 @@ PREFIX=${PREFIX:-"/usr/local"}
 WORKDIR=${WORKDIR:-"$(mktemp --directory --tmpdir=/tmp tmp.XXXXXXXXXX)"}
 STARTDIR=$(pwd)
 TSS2_CONFIG_SITE=${TSS2_CONFIG_SITE:-"${STARTDIR}/.ci/tss2-sys_config.site"}
-EDK2_TARGET=${EDK2_TARGET:-"${STARTDIR}/.ci/target-ovmf-debug-x64-gcc.txt"}
+
+export PREFIX
+export PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig"
+export LD_LIBRARY_PATH="${PREFIX}/lib"
+export PATH="${PREFIX}/bin:${PREFIX}/sbin:${PATH}"
+export MANPATH="${PREFIX}/share/man:/usr/share/man"
+export CPPFLAGS="-I${PREFIX}/include"
+export LDFLAGS="-L${PREFIX}/lib"
+
 
 if [ ! -d "${WORKDIR}" ]; then
-    mkdir "${WORKDIR}"
+    mkdir -p "${WORKDIR}"
 fi
 cd ${WORKDIR}
 
-wget https://download.01.org/tpm2/autoconf-archive-2017.09.28.tar.xz
-sha256sum autoconf-archive-2017.09.28.tar.xz | \
-  grep -q 5c9fb5845b38b28982a3ef12836f76b35f46799ef4a2e46b48e2bd3c6182fa01
-tar xJf autoconf-archive-2017.09.28.tar.xz
-cd autoconf-archive-2017.09.28
-./configure --prefix=${PREFIX}
-$MAKE
-sudo $MAKE install
-cd -
+if [ ! -d "${PREFIX}" ]; then
+    mkdir -p "${PREFIX}"
+fi
 
-git clone --branch master --single-branch \
-  https://github.com/tpm2-software/tpm2-tss.git
-cd tpm2-tss
-./bootstrap
-CONFIG_SITE="${TSS2_CONFIG_SITE}" ./configure --prefix=${PREFIX} \
-  --disable-defaultflags --disable-doxygen-doc --disable-tcti-device \
-  --disable-tcti-mssim --disable-esapi --with-maxloglevel=none
-$MAKE
-sudo $MAKE install
-cd -
-
-git clone --branch master --single-branch \
+git clone --branch master --single-branch --depth=1 \
   https://github.com/stefanberger/libtpms
 cd libtpms
-./autogen.sh --with-openssl --with-tpm2 --prefix=${PREFIX}
+./autogen.sh --with-openssl --with-tpm2 --prefix=${PREFIX} \
+  CPPFLAGS="${CPPFLAGS}" LDFLAGS="${LDFLAGS}"
 $MAKE
-sudo $MAKE install
+$MAKE install
 cd -
 
 # swtpm isn't compatible with clang
 CC_BAK=$CC
 CC=gcc
-git clone --branch master --single-branch \
+git clone --branch master --single-branch --depth=1 \
   https://github.com/stefanberger/swtpm
 cd swtpm
-./autogen.sh --prefix=${PREFIX} --without-seccomp
+./autogen.sh --prefix=${PREFIX} --without-seccomp \
+  CPPFLAGS="${CPPFLAGS}" LDFLAGS="${LDFLAGS}"
 $MAKE
-sudo $MAKE install
+$MAKE install
 cd -
 CC=$CC_BAK
 
-QEMU_SRC=qemu-3.1.0.tar.xz
-QEMU_SRC_SHA256=6a0508df079a0a33c2487ca936a56c12122f105b8a96a44374704bef6c69abfc
+git clone --branch master --single-branch --depth=1 \
+  https://github.com/tpm2-software/tpm2-tss.git
+cd tpm2-tss
+./bootstrap
+CONFIG_SITE="${TSS2_CONFIG_SITE}" ./configure --prefix=${PREFIX} \
+  --disable-defaultflags --disable-doxygen-doc --disable-tcti-device \
+  --disable-tcti-mssim --disable-tcti-spidev --disable-esys \
+  --disable-fapi --disable-policy --with-maxloglevel=none \
+  CPPFLAGS="${CPPFLAGS}" LDFLAGS="${LDFLAGS}"
+$MAKE
+$MAKE install
+cd -
+
+QEMU_VERSION=9.1.0
+QEMU_DIR=qemu-$QEMU_VERSION
+QEMU_SRC=${QEMU_DIR}.tar.xz
+QEMU_SRC_SHA256=816b7022a8ba7c2ac30e2e0cf973e826f6bcc8505339603212c5ede8e94d7834
 wget "https://download.qemu.org/${QEMU_SRC}"
 sha256sum "${QEMU_SRC}" | grep -q "${QEMU_SRC_SHA256}"
 if [ ! $? -eq 0 ]; then
@@ -97,17 +104,17 @@ if [ ! $? -eq 0 ]; then
     exit 1
 fi
 tar axf ${QEMU_SRC}
-cd qemu-3.1.0
+cd ${QEMU_DIR}
 ./configure --prefix=${PREFIX} --enable-tpm --disable-kvm \
-  --target-list=x86_64-softmmu
+  --target-list=aarch64-softmmu,x86_64-softmmu
 $MAKE
-sudo $MAKE install
+$MAKE install
 cd -
 
-GNUEFI_VERSION=3.0.10
+GNUEFI_VERSION=3.0.18
 GNUEFI_NAME=gnu-efi-${GNUEFI_VERSION}
 GNUEFI_BZ2=$GNUEFI_NAME.tar.bz2
-GNUEFI_BZ2_SHA256=f12082a3a5f0c3e38c67262a9f34245d139ac2cdfc0a0bdcf03c9b1f56fa4fed
+GNUEFI_BZ2_SHA256=7f212c96ee66547eeefb531267b641e5473d7d8529f0bd8ccdefd33cf7413f5c
 wget "https://downloads.sourceforge.net/project/gnu-efi/${GNUEFI_BZ2}"
 sha256sum "${GNUEFI_BZ2}" | grep -q "${GNUEFI_BZ2_SHA256}"
 if [ ! $? -eq 0 ]; then
@@ -117,27 +124,7 @@ fi
 tar axf ${GNUEFI_BZ2}
 cd ${GNUEFI_NAME}
 make
-sudo $MAKE PREFIX=${PREFIX} install
-cd -
-
-git clone --branch edk2-stable201908 --single-branch --recursive \
-  https://github.com/tianocore/edk2
-cd edk2
-(
-    CC=gcc
-    PYTHON3_ENABLE=FALSE
-    make --jobs=$(($(nproc)*3/2)) --directory=./BaseTools
-    source ./edksetup.sh
-    cp ${EDK2_TARGET} Conf/target.txt
-    build
-)
-OVMF_FD=$(find . -name 'OVMF.fd')
-if [ ! -f "${OVMF_FD}" ]; then
-    echo "OVMF.fd not found: ${OVMF_FD}"
-    exit 1
-fi
-sudo mkdir /usr/share/ovmf
-sudo cp ${OVMF_FD} /usr/share/ovmf/OVMF.fd
+$MAKE PREFIX=${PREFIX} install
 cd -
 
 cd ${STARTDIR}
