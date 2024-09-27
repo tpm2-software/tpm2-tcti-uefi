@@ -16,6 +16,19 @@ efi_main (
 #ifndef EDK2_BUILD
     InitializeLib (ImageHandle, SystemTable);
 #endif
+
+    EFI_STATUS Status = SystemTable->ConOut->ClearScreen(SystemTable->ConOut);
+    if (EFI_ERROR(Status))
+    {
+    return Status;
+    }
+
+    Status = SystemTable->ConOut->OutputString(SystemTable->ConOut, L"\r\nHello World!\r\n");
+    if (EFI_ERROR(Status))
+    {
+    return Status;
+    }
+
     Print (L"hello world!\n");
     return EFI_SUCCESS;
 }
